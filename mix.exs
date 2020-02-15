@@ -43,6 +43,7 @@ defmodule KeenOptic.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 1.6"},
+      {:typed_struct, "~> 0.1.4"},
 
       # Dev only deps
 
@@ -64,7 +65,8 @@ defmodule KeenOptic.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"],
+      lint: ["credo list"]
     ]
   end
 end
