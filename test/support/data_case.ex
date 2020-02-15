@@ -16,6 +16,8 @@ defmodule KeenOptic.DataCase do
 
   use ExUnit.CaseTemplate
 
+  alias Ecto.Adapters.SQL.Sandbox
+
   using do
     quote do
       alias KeenOptic.Repo
@@ -28,10 +30,10 @@ defmodule KeenOptic.DataCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(KeenOptic.Repo)
+    :ok = Sandbox.checkout(KeenOptic.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(KeenOptic.Repo, {:shared, self()})
+      Sandbox.mode(KeenOptic.Repo, {:shared, self()})
     end
 
     :ok
