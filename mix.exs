@@ -39,10 +39,18 @@ defmodule KeenOptic.MixProject do
       {:ecto_sql, "~> 3.1"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:httpoison, "~> 1.6"},
+
+      # Dev only deps
+
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:dialyxir, "~> 1.0.0-rc.7", only: [:dev], runtime: false},
+      {:credo, "~> 1.2", only: [:dev], runtime: false}
+
+      # Test only deps
     ]
   end
 
