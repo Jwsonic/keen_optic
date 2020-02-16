@@ -12,16 +12,25 @@ defmodule ExternalData do
 
       @enforce_keys Module.get_attribute(__MODULE__, :enforce_keys, [])
 
-      @spec from_json(String.t()) ::
+      @types Module.get_attribute(__MODULE__, :types, []) |> IO.inspect()
+
+      @spec from_json(String.t() | map()) ::
               {:ok, __MODULE__.t()} | {:error, String.t()} | {:error, Jason.DecodeError.t()}
       def from_json(string) when is_bitstring(string) do
-        with {:ok, data} <- Jason.decode(string),
-             allowed_data = ExternalData.__allowed_data__(@string_keys, data),
-             {:keys, []} <- {:keys, ExternalData.__missing_keys__(@enforce_keys, allowed_data)} do
-          {:ok, struct(__MODULE__, allowed_data)}
-        else
-          {:keys, keys} -> {:error, "You must provide #{inspect(keys)}."}
+        IO.inspect(@types)
+
+        case Jason.decode(string) do
+          {:ok, data} -> from_json(data)
           {:error, message} -> {:error, message}
+        end
+      end
+
+      def from_json(data) when is_map(data) do
+        allowed_data = ExternalData.__allowed_data__(@string_keys, data)
+
+        case ExternalData.__missing_keys__(@enforce_keys, allowed_data) do
+          [] -> {:ok, struct(__MODULE__, allowed_data)}
+          keys -> {:error, "You must provide #{inspect(keys)}."}
         end
       end
     end

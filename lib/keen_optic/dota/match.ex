@@ -1,8 +1,20 @@
 defmodule KeenOptic.Dota.Match do
   use TypedStruct
-  @before_compile ExternalData
 
-  alias KeenOptic.Dota.Pick
+  alias __MODULE__
+  alias KeenOptic.Dota.PickBan
+
+  # TODO: Early game state.
+  # %{
+  #   "game_mode" => 22,
+  #   "game_state" => 5,
+  #   "game_time" => 2445,
+  #   "league_id" => 0,
+  #   "league_node_id" => 0,
+  #   "matchid" => 5245062703,
+  #   "server_steam_id" => 90132710801809418,
+  #   "timestamp" => 2804
+  # }
 
   typedstruct do
     field :server_steam_id, non_neg_integer(), enforce: true
@@ -15,5 +27,40 @@ defmodule KeenOptic.Dota.Match do
     field :game_state, non_neg_integer(), enforce: true
     field :picks, list(Pick.t()), enforce: true
     field :bans, list(map()), enforce: true
+  end
+
+  def from_map(
+        %{
+          "server_steam_id" => server_steam_id,
+          "matchid" => matchid,
+          "timestamp" => timestamp,
+          "game_time" => game_time,
+          "game_mode" => game_mode,
+          "league_id" => league_id,
+          "league_node_id" => league_node_id,
+          "game_state" => game_state
+        } = data
+      ) do
+    picks = Map.get(data, "picks", [])
+    bans = Map.get(data, "bans", [])
+
+    with {:ok, picks} <- PickBan.from_list(picks),
+         {:ok, bans} <- PickBan.from_list(bans) do
+      {:ok,
+       %Match{
+         server_steam_id: server_steam_id,
+         matchid: matchid,
+         timestamp: timestamp,
+         game_time: game_time,
+         game_mode: game_mode,
+         league_id: league_id,
+         league_node_id: league_node_id,
+         game_state: game_state,
+         picks: picks,
+         bans: bans
+       }}
+    else
+      {:error, message} -> {:error, message}
+    end
   end
 end
