@@ -1,10 +1,13 @@
 defmodule KeenOptic.Dota.Match do
+  @moduledoc """
+  A struct with data about a current live dota game.
+  """
+
   use TypedStruct
 
   alias __MODULE__
   alias KeenOptic.Dota.PickBan
 
-  # TODO: Early game state.
   # %{
   #   "game_mode" => 22,
   #   "game_state" => 5,
@@ -25,8 +28,8 @@ defmodule KeenOptic.Dota.Match do
     field :league_id, non_neg_integer(), enforce: true
     field :league_node_id, non_neg_integer(), enforce: true
     field :game_state, non_neg_integer(), enforce: true
-    field :picks, list(Pick.t()), enforce: true
-    field :bans, list(map()), enforce: true
+    field :picks, list(PickBan.t()), enforce: true
+    field :bans, list(PickBan.t()), enforce: true
   end
 
   def from_map(

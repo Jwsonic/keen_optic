@@ -1,4 +1,7 @@
 defmodule KeenOptic.Dota.PickBan do
+  @moduledoc """
+  A struct with data about a pick or ban in a dota game.
+  """
   use TypedStruct
 
   alias __MODULE__
@@ -10,26 +13,25 @@ defmodule KeenOptic.Dota.PickBan do
 
   @spec from_map(list(map())) :: list(Pick.t()) | {:error, String.t()}
   def from_list(list) do
-    picks = Enum.map(list, &from_map/1)
+    results =
+      list
+      |> Enum.map(&from_map/1)
+      |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
 
-    error = picks |> Enum.filter(&is_error?/1) |> Enum.take(1)
-
-    case error do
-      [] -> {:ok, picks}
-      [error] -> error
+    case results[:error] do
+      nil -> {:ok, results[:ok]}
+      [error | _rest] -> error
     end
   end
 
-  @spec from_map(map()) :: Pick.t() | {:error, String.t()}
+  @spec from_map(map()) :: {:ok, Pick.t()} | {:error, String.t()}
   def from_map(%{"hero" => hero, "team" => team}) do
-    %PickBan{
-      hero: hero,
-      team: team
-    }
+    {:ok,
+     %PickBan{
+       hero: hero,
+       team: team
+     }}
   end
 
   def from_map(map), do: {:error, "Does not match Pick shape #{inspect(map)}."}
-
-  defp is_error?({:error, _message}), do: true
-  defp is_error?(_), do: false
 end

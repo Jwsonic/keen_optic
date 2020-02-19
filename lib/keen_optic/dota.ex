@@ -4,7 +4,7 @@ defmodule KeenOptic.Dota do
   to implement relevant Dota API calls.
   """
 
-  alias KeenOptic.Dota.RealTimeStats
+  alias KeenOptic.Dota.{LiveGame, RealTimeStats}
 
   @api_host "api.steampowered.com"
   @scheme "https"
@@ -13,17 +13,25 @@ defmodule KeenOptic.Dota do
   @real_time_stats_path "/IDOTA2MatchStats_570/GetRealtimeStats/v1"
 
   @default_query_params %{format: "JSON"}
+  @partner_params %{partner: 0}
 
   def live_games do
-    with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <- do_request(@live_game_path),
-         {:ok, data} <- Jason.decode(body) do
-      {:ok, data}
+    with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
+           do_request(@live_game_path, @partner_params),
+         {:ok, data} <- Jason.decode(body),
+         list when is_list(list) <- Map.get(data, "game_list", :missing_key),
+         {:ok, games} <-
+           LiveGame.from_list(list) do
+      {:ok, games}
     else
       {:ok, %HTTPoison.Response{status_code: status_code}} ->
         {:error, "Got status code #{status_code}."}
 
       {:error, %HTTPoison.Error{reason: reason}} ->
         {:error, reason}
+
+      :missing_key ->
+        {:error, "'game_list' key was missing from the response."}
 
       error ->
         error
@@ -50,11 +58,6 @@ defmodule KeenOptic.Dota do
   end
 
   # Private methods
-
-  defp do_request(path) do
-    do_request(path, %{})
-  end
-
   defp do_request(path, params) when is_map(params) do
     query =
       params

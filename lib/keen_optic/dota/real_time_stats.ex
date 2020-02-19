@@ -1,4 +1,7 @@
 defmodule KeenOptic.Dota.RealTimeStats do
+  @moduledoc """
+  A struct with data about a current live dota game.
+  """
   use TypedStruct
 
   alias __MODULE__
