@@ -9,9 +9,8 @@ defmodule KeenOptic.Application do
     # List all child processes to be supervised
     children = [
       # Start the endpoint when the application starts
-      KeenOpticWeb.Endpoint
-      # Starts a worker by calling: KeenOptic.Worker.start_link(arg)
-      # {KeenOptic.Worker, arg},
+      KeenOpticWeb.Endpoint,
+      KeenOptic.GameListWatcher.Supervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
