@@ -28,6 +28,9 @@ config :keen_optic, KeenOpticWeb.Endpoint,
       "--watch-stdin",
       cd: Path.expand("../assets", __DIR__)
     ]
+  ],
+  live_view: [
+    signing_salt: "SUPER_SECRET_123"
   ]
 
 # ## SSL Support

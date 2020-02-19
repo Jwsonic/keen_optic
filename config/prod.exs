@@ -11,7 +11,10 @@ use Mix.Config
 # before starting your production server.
 config :keen_optic, KeenOpticWeb.Endpoint,
   url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  live_view: [
+    signing_salt: System.get_env("LIVEVIEW_SALT")
+  ]
 
 # Do not print debug messages in production
 config :logger, level: :info

@@ -11,6 +11,7 @@ defmodule KeenOptic.GameListWatcher do
 
   @ets_table :live_games
   @ets_key :games
+
   @fetch_interval 1_000
 
   @live_games_topic "live_games"
