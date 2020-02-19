@@ -15,6 +15,7 @@ defmodule KeenOptic.GameListWatcher do
   @fetch_interval 1_000
 
   @live_games_topic "live_games"
+  @live_games_key :live_games
 
   # Genserver callbacks
 
@@ -66,7 +67,7 @@ defmodule KeenOptic.GameListWatcher do
       {:ok, games} ->
         :ets.insert(@ets_table, {@ets_key, games})
 
-        PubSub.broadcast(KeenOptic.PubSub, @live_games_topic, {:live_games, games})
+        PubSub.broadcast(KeenOptic.PubSub, @live_games_topic, {@live_games_key, games})
 
       {:error, message} ->
         Logger.error("Fetch games call failed with #{inspect(message)}")

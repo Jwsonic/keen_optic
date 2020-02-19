@@ -69,17 +69,20 @@ defmodule KeenOptic.Dota.LiveGame do
   end
 
   @spec from_map(map()) :: {:ok, list(LiveGame.t())} | {:error, String.t()}
-  def from_map(%{
-        "average_mmr" => average_mmr,
-        "dire_score" => dire_score,
-        "game_mode" => game_mode,
-        "game_time" => game_time,
-        "players" => players,
-        "radiant_lead" => radiant_lead,
-        "radiant_score" => radiant_score,
-        "server_steam_id" => server_steam_id,
-        "spectators" => spectators
-      }) do
+  def from_map(
+        %{
+          "average_mmr" => average_mmr,
+          "dire_score" => dire_score,
+          "game_mode" => game_mode,
+          "game_time" => game_time,
+          "radiant_lead" => radiant_lead,
+          "radiant_score" => radiant_score,
+          "server_steam_id" => server_steam_id,
+          "spectators" => spectators
+        } = data
+      ) do
+    players = Map.get(data, "players", [])
+
     case Player.from_list(players) do
       {:ok, players} ->
         {:ok,
