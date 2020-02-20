@@ -1,7 +1,6 @@
-defmodule KeenOpticWeb.LiveView.LiveGames do
+defmodule KeenOpticWeb.LiveView.LiveGamesList do
   use Phoenix.LiveView
 
-  alias KeenOptic.Dota.LiveGame
   alias KeenOptic.GameListWatcher
 
   # LiveView callbacks
@@ -11,7 +10,9 @@ defmodule KeenOpticWeb.LiveView.LiveGames do
     Current games:
     <ul>
       <%= for game <- @games do %>
-        <li>spectators: <%= game.spectators %>, mmr: <%= game.average_mmr %></li>
+        <%= live_patch to: Routes.live_path(@socket, LiveMatch, %{id: game.server_steam_id}), replace: false do %>
+          <li>spectators: <%= game.spectators %>, mmr: <%= game.average_mmr %></li>
+        <% end %>
       <% end %>
     </ul>
     """
