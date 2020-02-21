@@ -2,6 +2,8 @@ defmodule KeenOpticWeb.LiveView.LiveGamesList do
   use Phoenix.LiveView
 
   alias KeenOptic.GameListWatcher
+  alias KeenOpticWeb.LiveView.LiveMatch
+  alias KeenOpticWeb.Router.Helpers, as: Routes
 
   # LiveView callbacks
 

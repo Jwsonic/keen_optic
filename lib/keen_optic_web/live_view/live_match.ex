@@ -13,8 +13,10 @@ defmodule KeenOpticWeb.LiveView.LiveMatch do
     """
   end
 
-  def mount(_params, _session, socket) do
+  def mount(%{"id" => id}, _session, socket) do
     # Game fetch and loading state goes here
+
+    Logger.info("mount")
 
     {:ok, socket}
   end

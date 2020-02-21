@@ -17,7 +17,8 @@ defmodule KeenOpticWeb.Router do
   scope "/", KeenOpticWeb do
     pipe_through :browser
 
-    live "/", LiveView.LiveGames
+    live "/", LiveView.LiveGamesList
+    live "/match", LiveView.LiveMatch
   end
 
   # Other scopes may use custom stacks.

@@ -10,7 +10,8 @@ defmodule KeenOptic.Application do
     children = [
       # Start the endpoint when the application starts
       KeenOpticWeb.Endpoint,
-      KeenOptic.GameListWatcher.Supervisor
+      KeenOptic.GameListWatcher.Supervisor,
+      {DynamicSupervisor, name: KeenOptic.MatchWatcher.Supervisor, strategy: :one_for_one}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
