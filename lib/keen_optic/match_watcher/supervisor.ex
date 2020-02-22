@@ -1,24 +1,35 @@
 defmodule KeenOptic.MatchWatcher.Supervisor do
   @moduledoc """
-  A `Supervisor` for the `MatchWatcher` module.
+  A `DynamicSupervisor` for the `MatchWatcher` module.
   """
-  use Supervisor
+  use DynamicSupervisor
 
-  def start_link(init_arg) do
-    Supervisor.start_link(__MODULE__, init_arg, name: __MODULE__)
+  # Client methods
+
+  @doc """
+  Start a child watching a match with the given id. Workers are transient, meaning they
+  will only be restarted if the exist abnormally.
+  """
+  @spec start_child(non_neg_integer()) :: DynamicSupervisor.on_start_child()
+  def start_child(match_id) do
+    DynamicSupervisor.start_child(
+      __MODULE__,
+      %{
+        id: KeenOptic.MatchWatcher.Worker,
+        start: {KeenOptic.MatchWatcher.Worker, :start_link, [match_id]},
+        restart: :transient
+      }
+    )
   end
+
+  def start_link(_arg) do
+    DynamicSupervisor.start_link(__MODULE__, [], name: __MODULE__)
+  end
+
+  # DynamicSupervisor callbacks
 
   @impl true
-  def init(_init_arg) do
-    children = []
-
-    Supervisor.init(children, strategy: :one_for_one)
-  end
-
-  def new_child(id) do
-    Supervisor.start_link(
-      KeenOptic.MatchWatcher,
-      {:via, Registry, {KeenOptic.MatchWatcher.Registry, id}}
-    )
+  def init(_arg) do
+    DynamicSupervisor.init(strategy: :one_for_one)
   end
 end
