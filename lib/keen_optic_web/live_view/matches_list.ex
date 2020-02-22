@@ -1,7 +1,11 @@
-defmodule KeenOpticWeb.LiveView.LiveGamesList do
+defmodule KeenOpticWeb.LiveView.MatchesList do
+  @moduledoc """
+  Match is a `Phoenix.LiveView` process that subscribes to and displays data about the list of currently live matches.
+  """
+
   use Phoenix.LiveView
 
-  alias KeenOptic.GameListWatcher
+  alias KeenOptic.MatchListWatcher.Worker, as: MatchListWatcher
   alias KeenOpticWeb.LiveView.LiveMatch
   alias KeenOpticWeb.Router.Helpers, as: Routes
 
@@ -22,18 +26,18 @@ defmodule KeenOpticWeb.LiveView.LiveGamesList do
 
   def mount(_params, _session, socket) do
     games =
-      case GameListWatcher.live_games() do
+      case MatchListWatcher.live_matches() do
         {:ok, games} -> games
         _ -> []
       end
 
-    GameListWatcher.subscribe_live_games()
+    MatchListWatcher.subscribe_live_matches()
 
     {:ok, assign(socket, :games, games)}
   end
 
   # Genserver callbacks
-  def handle_info({:live_games, games}, socket) do
+  def handle_info({:live_matches, games}, socket) do
     {:noreply, assign(socket, :games, games)}
   end
 end

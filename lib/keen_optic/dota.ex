@@ -15,7 +15,7 @@ defmodule KeenOptic.Dota do
   @default_query_params %{format: "JSON"}
   @partner_params %{partner: 0}
 
-  def live_games do
+  def live_matches do
     with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
            do_request(@live_game_path, @partner_params),
          {:ok, data} <- Jason.decode(body),

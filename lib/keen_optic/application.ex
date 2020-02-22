@@ -10,7 +10,7 @@ defmodule KeenOptic.Application do
     children = [
       # Start the endpoint when the application starts
       KeenOpticWeb.Endpoint,
-      KeenOptic.GameListWatcher.Supervisor,
+      KeenOptic.MatchListWatcher.Supervisor,
       KeenOptic.MatchWatcher.Supervisor,
       KeenOptic.MatchWatcher.Registry
     ]

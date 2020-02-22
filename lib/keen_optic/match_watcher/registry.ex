@@ -21,7 +21,7 @@ defmodule KeenOptic.MatchWatcher.Registry do
   @doc """
   Return a "via tuple" that can be used to start a match watcher Worker linked to this Registry.
   """
-  @psec via_tuple(non_neg_integer()) :: {:via, module(), {module(), non_neg_integer()}}
+  @spec via_tuple(non_neg_integer()) :: {:via, module(), {module(), non_neg_integer()}}
   def via_tuple(match_id) do
     {:via, Registry, {@name, match_id}}
   end

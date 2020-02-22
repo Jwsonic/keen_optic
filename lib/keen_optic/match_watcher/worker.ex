@@ -38,7 +38,7 @@ defmodule KeenOptic.MatchWatcher.Worker do
   end
 
   @impl true
-  def handle_info(:fetch, %{match_id: match_id}) do
+  def handle_info(:fetch, %{match_id: match_id} = state) do
     Logger.info("Fetching match #{match_id}")
 
     # TODO: actually fetch match info here
@@ -54,7 +54,7 @@ defmodule KeenOptic.MatchWatcher.Worker do
   """
   @spec subscribe_match(match_id_type()) :: :ok | {:error, term()}
   def subscribe_match(match_id) do
-    maybe_start_worker(match)
+    maybe_start_worker(match_id)
 
     match_id
     |> build_topic()
