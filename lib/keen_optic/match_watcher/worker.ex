@@ -11,17 +11,14 @@ defmodule KeenOptic.MatchWatcher.Worker do
   alias KeenOptic.MatchWatcher.Supervisor, as: MWSupervisor
   alias Phoenix.PubSub
 
-  @type match_id_type() :: non_neg_integer()
-
-  @ets_table :live_matches
-
   @fetch_interval 5_000
 
   @match_topic_prefix "match"
+  @match_key :match_update
 
   # Client methods
 
-  @spec start_link(match_id_type()) :: GenServer.on_start()
+  @spec start_link(non_neg_integer()) :: GenServer.on_start()
   def start_link(match_id) do
     GenServer.start_link(__MODULE__, match_id, name: MWRegistry.via_tuple(match_id))
   end
@@ -30,7 +27,8 @@ defmodule KeenOptic.MatchWatcher.Worker do
 
   @impl true
   def init(match_id) do
-    Logger.info("Starting worker for match #{match_id}")
+    Logger.metadata(match_id: match_id)
+    Logger.info("Starting worker.")
 
     schedule_fetch()
 
@@ -39,9 +37,7 @@ defmodule KeenOptic.MatchWatcher.Worker do
 
   @impl true
   def handle_info(:fetch, %{match_id: match_id} = state) do
-    Logger.info("Fetching match #{match_id}")
-
-    # TODO: actually fetch match info here
+    update_match(match_id)
 
     schedule_fetch()
 
@@ -52,7 +48,7 @@ defmodule KeenOptic.MatchWatcher.Worker do
   Subscribes a process to receive updates about a match.
   May also start a worker to watch the match if there isn't one already started.
   """
-  @spec subscribe_match(match_id_type()) :: :ok | {:error, term()}
+  @spec subscribe_match(non_neg_integer()) :: :ok | {:error, term()}
   def subscribe_match(match_id) do
     maybe_start_worker(match_id)
 
@@ -80,5 +76,18 @@ defmodule KeenOptic.MatchWatcher.Worker do
 
   defp subscribe(topic) do
     PubSub.subscribe(KeenOptic.PubSub, topic)
+  end
+
+  defp update_match(match_id) do
+    Logger.info("Fetching match stats.")
+
+    case Dota.real_time_stats(match_id) do
+      {:ok, match_data} ->
+        topic = build_topic(match_id)
+        PubSub.broadcast(KeenOptic.PubSub, topic, {@match_key, match_data})
+
+      {:error, error} ->
+        Logger.error("Failed to fetch data due to #{inspect(error)}")
+    end
   end
 end

@@ -6,7 +6,7 @@ defmodule KeenOpticWeb.LiveView.MatchesList do
   use Phoenix.LiveView
 
   alias KeenOptic.MatchListWatcher.Worker, as: MatchListWatcher
-  alias KeenOpticWeb.LiveView.LiveMatch
+  alias KeenOpticWeb.LiveView.Match
   alias KeenOpticWeb.Router.Helpers, as: Routes
 
   # LiveView callbacks
@@ -16,7 +16,7 @@ defmodule KeenOpticWeb.LiveView.MatchesList do
     Current games:
     <ul>
       <%= for game <- @games do %>
-        <%= live_patch to: Routes.live_path(@socket, LiveMatch, %{id: game.server_steam_id}), replace: false do %>
+        <%= live_patch to: Routes.live_path(@socket, Match, %{id: game.server_steam_id}), replace: false do %>
           <li>spectators: <%= game.spectators %>, mmr: <%= game.average_mmr %></li>
         <% end %>
       <% end %>
@@ -37,6 +37,7 @@ defmodule KeenOpticWeb.LiveView.MatchesList do
   end
 
   # Genserver callbacks
+
   def handle_info({:live_matches, games}, socket) do
     {:noreply, assign(socket, :games, games)}
   end
