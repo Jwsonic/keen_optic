@@ -37,11 +37,16 @@ defmodule KeenOptic.MatchWatcher.Worker do
 
   @impl true
   def handle_info(:fetch, %{match_id: match_id} = state) do
-    update_match(match_id)
+    case update_match(match_id) do
+      :ok ->
+        schedule_fetch()
 
-    schedule_fetch()
+        {:noreply, state}
 
-    {:noreply, state}
+      {:error, _reason} ->
+        Logger.info("Stopping worker.")
+        {:stop, :normal, state}
+    end
   end
 
   @doc """
@@ -79,15 +84,17 @@ defmodule KeenOptic.MatchWatcher.Worker do
   end
 
   defp update_match(match_id) do
-    Logger.info("Fetching match stats.")
-
     case Dota.real_time_stats(match_id) do
       {:ok, match_data} ->
         topic = build_topic(match_id)
         PubSub.broadcast(KeenOptic.PubSub, topic, {@match_key, match_data})
 
+        :ok
+
       {:error, error} ->
-        Logger.error("Failed to fetch data due to #{inspect(error)}")
+        Logger.error("Error fetching match data #{inspect(error)}")
+
+        {:error, error}
     end
   end
 end

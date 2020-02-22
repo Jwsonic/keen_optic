@@ -38,7 +38,8 @@ defmodule KeenOptic.Dota do
     end
   end
 
-  @spec real_time_stats(non_neg_integer()) :: {:ok, RealTimeStats.t()} | {:error, String.t()}
+  @spec real_time_stats(non_neg_integer()) ::
+          {:ok, RealTimeStats.t()} | {:error, String.t()} | {:error, :no_match}
   def real_time_stats(server_steam_id) do
     with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
            do_request(@real_time_stats_path, %{server_steam_id: server_steam_id}),
@@ -46,6 +47,9 @@ defmodule KeenOptic.Dota do
          {:ok, stats} <- RealTimeStats.from_map(data) do
       {:ok, stats}
     else
+      {:ok, %HTTPoison.Response{status_code: 400}} ->
+        {:error, :no_match}
+
       {:ok, %HTTPoison.Response{status_code: status_code}} ->
         {:error, "Got status code #{status_code}."}
 
