@@ -7,19 +7,33 @@ defmodule KeenOpticWeb.LiveView.Match do
   require Logger
 
   alias KeenOptic.MatchWatcher.Worker, as: MatchWatcher
+  alias KeenOpticWeb.Router.Helpers, as: Routes
 
   # LiveView callbacks
 
   def render(assigns) do
     ~L"""
-    <%= @match |> Map.get(:teams) |> inspect() %>
+    <div class="mini-map-container">
+      <img class="mini-map" src="<%= Routes.static_path(KeenOpticWeb.Endpoint, "/images/minimap.png") %>" />
+      <%= for player <- @match.radiant.players do %>
+        <span style="top=<%= to_percent(player.x) %>%; left=<%= to_percent(player.y) %>%;"><%= player.name %></span>
+      <% end %>
+    </div>
     """
+  end
+
+  defp to_percent(num) when num < 0 do
+    50 + abs(num) * 50
+  end
+
+  defp to_percent(num) do
+    abs(num) * 50
   end
 
   def mount(_params, _session, socket) do
     # Game fetch and loading state goes here
 
-    {:ok, assign(socket, :match, %{})}
+    {:ok, assign(socket, :match, %{radiant: %{players: []}})}
   end
 
   def handle_params(params, _url, socket) do
