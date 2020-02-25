@@ -25,6 +25,7 @@ defmodule KeenOptic.RealTimeStats.Player do
 
   typedstruct do
     field :accountid, non_neg_integer(), enforce: true
+    field :hero_id, non_neg_integer(), enforce: true
     field :name, String.t(), enforce: true
     field :x, float(), enforce: true
     field :y, float(), enforce: true
@@ -44,8 +45,14 @@ defmodule KeenOptic.RealTimeStats.Player do
   end
 
   @spec from_map(map()) :: {:ok, Player.t()} | {:error, String.t()}
-  def from_map(%{"accountid" => accountid, "name" => name, "x" => x, "y" => y}) do
-    {:ok, %Player{accountid: accountid, name: name, x: x, y: y}}
+  def from_map(%{
+        "accountid" => accountid,
+        "heroid" => hero_id,
+        "name" => name,
+        "x" => x,
+        "y" => y
+      }) do
+    {:ok, %Player{accountid: accountid, hero_id: hero_id, name: name, x: x, y: y}}
   end
 
   def from_map(data) do

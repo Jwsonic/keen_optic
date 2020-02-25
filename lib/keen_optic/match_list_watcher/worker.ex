@@ -9,10 +9,11 @@ defmodule KeenOptic.MatchListWatcher.Worker do
   alias KeenOptic.Dota
   alias Phoenix.PubSub
 
-  @ets_table :live_matches
-  @ets_key :games
+  @ets_table :live_matche_list
+  @ets_key :match_list
 
-  @fetch_interval 5_000
+  # Every 20 seconds
+  @fetch_interval 20_000
 
   @live_matches_topic "live_matches"
   @live_matches_key :live_matches
@@ -48,6 +49,9 @@ defmodule KeenOptic.MatchListWatcher.Worker do
   @impl true
   def init(_opt) do
     :ets.new(@ets_table, [:set, :protected, :named_table])
+
+    # Grab data right on boot
+    update_games()
 
     schedule_fetch()
 

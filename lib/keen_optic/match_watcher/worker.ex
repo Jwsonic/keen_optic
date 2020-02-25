@@ -7,6 +7,7 @@ defmodule KeenOptic.MatchWatcher.Worker do
   require Logger
 
   alias KeenOptic.Dota
+  alias KeenOptic.Dota.RealTimeStats
   alias KeenOptic.MatchWatcher.Registry, as: MWRegistry
   alias KeenOptic.MatchWatcher.Supervisor, as: MWSupervisor
   alias Phoenix.PubSub
@@ -16,11 +17,37 @@ defmodule KeenOptic.MatchWatcher.Worker do
   @match_topic_prefix "match"
   @match_key :match_update
 
+  @ets_table :matches
+
   # Client methods
 
   @spec start_link(non_neg_integer()) :: GenServer.on_start()
   def start_link(match_id) do
     GenServer.start_link(__MODULE__, match_id, name: MWRegistry.via_tuple(match_id))
+  end
+
+  @doc """
+  Returns a real time match data if we have any.
+  """
+  @spec get_match(non_neg_integer()) :: {:ok, RealTimeStats.t()} | :no_match
+  def get_match(match_id) do
+    case :ets.lookup(@ets_table, match_id) do
+      [{^match_id, match}] -> {:ok, match}
+      [] -> :no_match
+    end
+  end
+
+  @doc """
+  Subscribes a process to receive updates about a match.
+  May also start a worker to watch the match if there isn't one already started.
+  """
+  @spec subscribe_match(non_neg_integer()) :: :ok | {:error, term()}
+  def subscribe_match(match_id) do
+    maybe_start_worker(match_id)
+
+    match_id
+    |> build_topic()
+    |> subscribe()
   end
 
   # Genserver callbacks
@@ -29,6 +56,8 @@ defmodule KeenOptic.MatchWatcher.Worker do
   def init(match_id) do
     Logger.metadata(match_id: match_id)
     Logger.info("Starting worker.")
+
+    :ets.new(@ets_table, [:set, :protected, :named_table])
 
     schedule_fetch()
 
@@ -47,19 +76,6 @@ defmodule KeenOptic.MatchWatcher.Worker do
         Logger.info("Stopping worker.")
         {:stop, :normal, state}
     end
-  end
-
-  @doc """
-  Subscribes a process to receive updates about a match.
-  May also start a worker to watch the match if there isn't one already started.
-  """
-  @spec subscribe_match(non_neg_integer()) :: :ok | {:error, term()}
-  def subscribe_match(match_id) do
-    maybe_start_worker(match_id)
-
-    match_id
-    |> build_topic()
-    |> subscribe()
   end
 
   # Private methods
@@ -85,9 +101,11 @@ defmodule KeenOptic.MatchWatcher.Worker do
 
   defp update_match(match_id) do
     case Dota.real_time_stats(match_id) do
-      {:ok, match_data} ->
+      {:ok, match} ->
+        :ets.insert(@ets_table, {match_id, match})
+
         topic = build_topic(match_id)
-        PubSub.broadcast(KeenOptic.PubSub, topic, {@match_key, match_data})
+        PubSub.broadcast(KeenOptic.PubSub, topic, {@match_key, match})
 
         :ok
 

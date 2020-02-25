@@ -15,38 +15,45 @@ defmodule KeenOpticWeb.LiveView.Match do
     ~L"""
     <div class="mini-map-container">
       <img class="mini-map" src="<%= Routes.static_path(KeenOpticWeb.Endpoint, "/images/minimap.png") %>" />
-      <%= for player <- @match.radiant.players do %>
-        <span style="top=<%= to_percent(player.x) %>%; left=<%= to_percent(player.y) %>%;"><%= player.name %></span>
+      <%= for player <- @match.radiant.players  do %>
+        <span class="radiant circle" style="top: <%= to_percent(player.y) %>%; left: <%= to_percent(player.x) %>%;"></span>
+      <% end %>
+
+      <%= for player <- @match.dire.players do %>
+        <span class="dire circle" style="top: <%= to_percent(player.y) %>%; left: <%= to_percent(player.x) %>%;"></span>
       <% end %>
     </div>
     """
   end
 
-  defp to_percent(num) when num < 0 do
+  defp to_percent(num) do
+    50 + num * 50
+  end
+
+  defp x_percent(num) when num < 0 do
     50 + abs(num) * 50
   end
 
-  defp to_percent(num) do
+  defp x_percent(num) do
     abs(num) * 50
   end
 
-  def mount(_params, _session, socket) do
-    # Game fetch and loading state goes here
-
-    {:ok, assign(socket, :match, %{radiant: %{players: []}})}
+  defp y_percent(num) do
+    50 + num * 50
   end
 
-  def handle_params(params, _url, socket) do
-    case extract_id(params) do
-      :error ->
-        GenServer.stop(self())
+  def mount(params, _session, socket) do
+    match_id = extract_id!(params)
 
-      id ->
-        Logger.info("Watching match #{id}.")
-        MatchWatcher.subscribe_match(id)
-    end
+    MatchWatcher.subscribe_match(match_id)
 
-    {:noreply, socket}
+    match =
+      case MatchWatcher.get_match(match_id) do
+        :no_match -> %{radiant: %{players: []}}
+        {:ok, match} -> match
+      end
+
+    {:ok, assign(socket, :match, match)}
   end
 
   # Genserver callbacks
@@ -55,7 +62,7 @@ defmodule KeenOpticWeb.LiveView.Match do
     {:noreply, assign(socket, :match, match)}
   end
 
-  defp extract_id(%{"id" => id}) when is_bitstring(id) do
+  defp extract_id!(%{"id" => id}) when is_bitstring(id) do
     case Integer.parse(id) do
       {id, _rest} ->
         id
@@ -63,17 +70,17 @@ defmodule KeenOpticWeb.LiveView.Match do
       :error ->
         Logger.error("Got params with a non-int id #{inspect(id)}")
 
-        :error
+        GenServer.stop(self())
     end
   end
 
-  defp extract_id(%{"id" => id}) when is_integer(id) do
+  defp extract_id!(%{"id" => id}) when is_integer(id) do
     id
   end
 
-  defp extract_id(params) do
+  defp extract_id!(params) do
     Logger.error("Got params with no match id #{inspect(params)}")
 
-    :error
+    GenServer.stop(self())
   end
 end
