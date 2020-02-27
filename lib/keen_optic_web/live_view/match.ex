@@ -6,39 +6,35 @@ defmodule KeenOpticWeb.LiveView.Match do
 
   require Logger
 
+  alias KeenOptic.Dota.Hero
   alias KeenOptic.MatchWatcher.Worker, as: MatchWatcher
-  alias KeenOpticWeb.Router.Helpers, as: Routes
 
   # LiveView callbacks
 
   def render(assigns) do
     ~L"""
     <div class="mini-map-container">
-      <img class="mini-map" src="<%= Routes.static_path(KeenOpticWeb.Endpoint, "/images/minimap.png") %>" />
+      <img class="mini-map" src="/images/minimap.png" />
+
       <%= for player <- @match.radiant.players  do %>
-        <span class="radiant circle" style="top: <%= to_percent(player.y) %>%; left: <%= to_percent(player.x) %>%;"></span>
+        <img src="<%= hero_image(player.hero_id) %>" class="circle" style="top: <%= to_percent(player.y) %>%; left: <%= to_percent(player.x) %>%;"/>
       <% end %>
 
       <%= for player <- @match.dire.players do %>
-        <span class="dire circle" style="top: <%= to_percent(player.y) %>%; left: <%= to_percent(player.x) %>%;"></span>
+        <img src="<%= hero_image(player.hero_id) %>" class="circle" style="top: <%= to_percent(player.y) %>%; left: <%= to_percent(player.x) %>%;"/>
       <% end %>
     </div>
     """
   end
 
+  defp hero_image(hero_id) do
+    case Enum.find(Hero.all_heroes(), fn hero -> hero.id == hero_id end) do
+      nil -> ""
+      hero -> "/images/heroes/icons/#{String.replace(hero.name, "npc_dota_hero_", "")}.png"
+    end
+  end
+
   defp to_percent(num) do
-    50 + num * 50
-  end
-
-  defp x_percent(num) when num < 0 do
-    50 + abs(num) * 50
-  end
-
-  defp x_percent(num) do
-    abs(num) * 50
-  end
-
-  defp y_percent(num) do
     50 + num * 50
   end
 
@@ -49,7 +45,7 @@ defmodule KeenOpticWeb.LiveView.Match do
 
     match =
       case MatchWatcher.get_match(match_id) do
-        :no_match -> %{radiant: %{players: []}}
+        :no_match -> %{radiant: %{players: []}, dire: %{players: []}}
         {:ok, match} -> match
       end
 
