@@ -109,6 +109,12 @@ defmodule KeenOptic.MatchWatcher.Worker do
 
         :ok
 
+      {:error, :no_match} ->
+        msg = "No match with id #{match_id}"
+        Logger.error(msg)
+
+        {:error, msg}
+
       {:error, error} ->
         Logger.error("Error fetching match data #{inspect(error)}")
 

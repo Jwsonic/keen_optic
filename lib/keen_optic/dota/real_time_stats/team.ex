@@ -40,7 +40,7 @@ defmodule KeenOptic.RealTimeStats.Team do
 
   @spec from_map(map()) :: {:ok, Team.t()} | {:error, String.t()}
   def from_map(%{"net_worth" => net_worth, "players" => players, "score" => score}) do
-    with {:ok, players} <- Player.from_list(players) do
+    with {:ok, players} <- Player.new(players) do
       {:ok,
        %Team{
          net_worth: net_worth,
