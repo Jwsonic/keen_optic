@@ -17,25 +17,28 @@ defmodule KeenOpticWeb.LiveView.Match do
       <img class="mini-map" src="/images/minimap.png" />
 
       <%= for player <- @match.radiant.players  do %>
-        <img src="<%= hero_image(player.hero_id) %>" class="circle" style="top: <%= to_percent(player.y) %>%; left: <%= to_percent(player.x) %>%;"/>
+        <img src="<%= hero_image(player.hero_id) %>" class="circle" style="bottom: <%= to_percent(player.y) %>%; right: <%= to_percent(player.x) %>%;"/>
       <% end %>
 
       <%= for player <- @match.dire.players do %>
-        <img src="<%= hero_image(player.hero_id) %>" class="circle" style="top: <%= to_percent(player.y) %>%; left: <%= to_percent(player.x) %>%;"/>
+        <img
+        src="<%= hero_image(player.hero_id) %>"
+        class="circle"
+        style="bottom: <%= to_percent(player.y) %>%; right: <%= to_percent(player.x) %>%;"/>
       <% end %>
     </div>
     """
   end
 
   defp hero_image(hero_id) do
-    case Enum.find(Hero.all_heroes(), fn hero -> hero.id == hero_id end) do
-      nil -> ""
-      hero -> "/images/heroes/icons/#{String.replace(hero.name, "npc_dota_hero_", "")}.png"
+    case Hero.hero(hero_id) do
+      %Hero{image_url: image_url} -> image_url
+      :unknown -> ""
     end
   end
 
   defp to_percent(num) do
-    50 + num * 50
+    Float.round(50 + num * 50, 2)
   end
 
   def mount(params, _session, socket) do
