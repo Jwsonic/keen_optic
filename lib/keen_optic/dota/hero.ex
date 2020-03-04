@@ -32,7 +32,7 @@ defmodule KeenOptic.Dota.Hero do
     Map.get(heroes(), hero_id, :unknown)
   end
 
-  # This has tp be a function so we can refernce the struct.
+  # This has to be a function so we can reference the struct.
   defp hero_map do
     %{
       105 => %Hero{
