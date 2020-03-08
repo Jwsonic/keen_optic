@@ -49,7 +49,7 @@ defmodule KeenOptic.Dota.RealTimeStats do
   defp extract_team(teams, team_id) do
     case Enum.find(teams, fn team -> Map.get(team, "team_number") == team_id end) do
       nil -> {:error, "Missing team with id #{team_id}."}
-      team -> Team.from_map(team)
+      team -> Team.new(team)
     end
   end
 end
