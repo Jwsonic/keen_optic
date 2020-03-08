@@ -28,7 +28,7 @@ defmodule KeenOptic.Dota.RealTimeStats do
         "buildings" => buildings,
         "graph_data" => graph_data
       }) do
-    with {:ok, match} <- Match.from_map(match),
+    with {:ok, match} <- Match.new(match),
          {:ok, radiant} <- extract_team(teams, @radiant_id),
          {:ok, dire} <- extract_team(teams, @dire_id) do
       {:ok,
@@ -42,7 +42,7 @@ defmodule KeenOptic.Dota.RealTimeStats do
          dire: dire
        }}
     else
-      error -> error
+      {:error, error} -> {:error, error}
     end
   end
 

@@ -1,69 +1,51 @@
 defmodule KeenOptic.Dota.Match do
   @moduledoc """
-  A struct with data about a current live dota game.
+  A struct with match data about a current live dota game.
   """
 
-  use TypedStruct
+  use Ecto.Schema
+
+  import Ecto.Changeset
+  import KeenOptic.Ecto.Utils
 
   alias __MODULE__
   alias KeenOptic.Dota.PickBan
 
-  # %{
-  #   "game_mode" => 22,
-  #   "game_state" => 5,
-  #   "game_time" => 2445,
-  #   "league_id" => 0,
-  #   "league_node_id" => 0,
-  #   "matchid" => 5245062703,
-  #   "server_steam_id" => 90132710801809418,
-  #   "timestamp" => 2804
-  # }
+  @type t() :: %Match{}
 
-  typedstruct do
-    field :server_steam_id, non_neg_integer(), enforce: true
-    field :matchid, non_neg_integer(), enforce: true
-    field :timestamp, non_neg_integer(), enforce: true
-    field :game_time, non_neg_integer(), enforce: true
-    field :game_mode, non_neg_integer(), enforce: true
-    field :league_id, non_neg_integer(), enforce: true
-    field :league_node_id, non_neg_integer(), enforce: true
-    field :game_state, non_neg_integer(), enforce: true
-    field :picks, list(PickBan.t()), enforce: true
-    field :bans, list(PickBan.t()), enforce: true
+  @required_params ~w(server_steam_id matchid game_time game_mode league_id game_state picks bans)a
+  @rename_pairs [{"matchid", "match_id"}]
+
+  @primary_key {:server_steam_id, :id, autogenerate: false}
+  embedded_schema do
+    field :match_id, :integer
+    field :game_time, :time
+    field :game_mode, :integer
+    field :league_id, :integer
+    field :game_state, :integer
+    embeds_many :picks, PickBan
+    embeds_many :bans, PickBan
   end
 
-  def from_map(
-        %{
-          "server_steam_id" => server_steam_id,
-          "matchid" => matchid,
-          "timestamp" => timestamp,
-          "game_time" => game_time,
-          "game_mode" => game_mode,
-          "league_id" => league_id,
-          "league_node_id" => league_node_id,
-          "game_state" => game_state
-        } = data
-      ) do
-    picks = Map.get(data, "picks", [])
-    bans = Map.get(data, "bans", [])
+  @picks_key "picks"
+  @bans_key "bans"
 
-    with {:ok, picks} <- PickBan.from_list(picks),
-         {:ok, bans} <- PickBan.from_list(bans) do
-      {:ok,
-       %Match{
-         server_steam_id: server_steam_id,
-         matchid: matchid,
-         timestamp: timestamp,
-         game_time: game_time,
-         game_mode: game_mode,
-         league_id: league_id,
-         league_node_id: league_node_id,
-         game_state: game_state,
-         picks: picks,
-         bans: bans
-       }}
+  @spec new(map()) :: {:ok, Match.t()} | {:error, Ecto.Changeset.t()}
+  def new(params) do
+    with {:ok, picks} <- extract(params, @picks_key),
+         {:ok, bans} <- extract(params, @bans_key) do
+      params
+      |> rename_params(@rename_pairs)
+      |> (&cast(%Match{}, &1, @required_params)).()
+      |> put_embed(:picks, picks)
+      |> put_embed(:bans, bans)
+      |> apply_action(:insert)
     else
-      {:error, message} -> {:error, message}
+      {:error, error} -> {:error, error}
     end
+  end
+
+  defp extract(params, key) do
+    params |> Map.get(key, []) |> PickBan.new()
   end
 end

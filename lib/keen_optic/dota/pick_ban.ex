@@ -2,36 +2,29 @@ defmodule KeenOptic.Dota.PickBan do
   @moduledoc """
   A struct with data about a pick or ban in a dota game.
   """
-  use TypedStruct
+
+  use Ecto.Schema
+
+  import Ecto.Changeset
+  import KeenOptic.Ecto.Utils
 
   alias __MODULE__
 
-  typedstruct do
-    field :hero, non_neg_integer(), enforce: true
-    field :team, non_neg_integer(), enforce: true
+  @required_attrs ~w(hero team)a
+
+  embedded_schema do
+    field :hero, :integer
+    field :team, :integer
   end
 
-  @spec from_map(list(map())) :: list(Pick.t()) | {:error, String.t()}
-  def from_list(list) do
-    results =
-      list
-      |> Enum.map(&from_map/1)
-      |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
-
-    case results[:error] do
-      nil -> {:ok, results[:ok]}
-      [error | _rest] -> error
-    end
+  @spec new(map() | list(map())) :: {:ok, Pick.t()} | {:error, Ecto.Changeset.t()}
+  def new(list) when is_list(list) do
+    reduce_results(list, &new/1)
   end
 
-  @spec from_map(map()) :: {:ok, Pick.t()} | {:error, String.t()}
-  def from_map(%{"hero" => hero, "team" => team}) do
-    {:ok,
-     %PickBan{
-       hero: hero,
-       team: team
-     }}
+  def new(params) do
+    params
+    |> (&cast(%PickBan{}, &1, @required_attrs)).()
+    |> apply_action(:insert)
   end
-
-  def from_map(map), do: {:error, "Does not match Pick shape #{inspect(map)}."}
 end

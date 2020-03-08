@@ -10,7 +10,8 @@ defmodule KeenOptic.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      dialyzer: dialyzer()
     ]
   end
 
@@ -66,8 +67,15 @@ defmodule KeenOptic.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"],
+      # test: ["ecto.create --quiet", "ecto.migrate", "test"],
       lint: ["credo list"]
+    ]
+  end
+
+  # Dialyzer configurations
+  defp dialyzer do
+    [
+      plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
     ]
   end
 end

@@ -28,13 +28,14 @@ defmodule KeenOptic.RealTimeStats.Player do
   use Ecto.Schema
 
   import Ecto.Changeset
+  import KeenOptic.Ecto.Utils
 
   alias __MODULE__
 
   @type t() :: %Player{}
 
   @required_params ~w(account_id hero_id name x y)a
-  @rename_params [{"heroid", "hero_id"}, {"accountid", "account_id"}]
+  @rename_pairs [{"heroid", "hero_id"}, {"accountid", "account_id"}]
 
   @primary_key {:account_id, :id, autogenerate: false}
   embedded_schema do
@@ -47,35 +48,12 @@ defmodule KeenOptic.RealTimeStats.Player do
   @spec new(map() | list(map())) :: {:ok, Player.t()} | {:error, String.t()}
   def new(params) when is_map(params) do
     params
-    |> rename_params()
-    |> cast()
+    |> rename_params(@rename_pairs)
+    |> (&cast(%Player{}, &1, @required_params)).()
     |> apply_action(:insert)
   end
 
-  def new(param_list) when is_list(param_list) do
-    result =
-      Enum.reduce_while(param_list, [], fn params, acc ->
-        case new(params) do
-          {:ok, player} -> {:cont, [player | acc]}
-          {:error, message} -> {:halt, {:error, message}}
-        end
-      end)
-
-    case result do
-      {:error, _message} -> result
-      players -> {:ok, players}
-    end
-  end
-
-  defp rename_params(params) do
-    Enum.reduce(@rename_params, params, fn {old, new}, acc ->
-      acc
-      |> Map.get(old)
-      |> (&Map.put(acc, new, &1)).()
-    end)
-  end
-
-  defp cast(params) do
-    cast(%Player{}, params, @required_params)
+  def new(list) when is_list(list) do
+    reduce_results(list, &new/1)
   end
 end
