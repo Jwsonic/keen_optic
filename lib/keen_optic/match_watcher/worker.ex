@@ -12,7 +12,7 @@ defmodule KeenOptic.MatchWatcher.Worker do
   alias KeenOptic.MatchWatcher.Supervisor, as: MWSupervisor
   alias Phoenix.PubSub
 
-  @fetch_interval 5_000
+  @update_interval 5_000
 
   @match_topic_prefix "match"
   @match_key :match_update
@@ -59,16 +59,16 @@ defmodule KeenOptic.MatchWatcher.Worker do
 
     :ets.new(@ets_table, [:set, :protected, :named_table])
 
-    schedule_fetch()
+    schedule_update()
 
     {:ok, %{match_id: match_id}}
   end
 
   @impl true
-  def handle_info(:fetch, %{match_id: match_id} = state) do
+  def handle_info(:update, %{match_id: match_id} = state) do
     case update_match(match_id) do
       :ok ->
-        schedule_fetch()
+        schedule_update()
 
         {:noreply, state}
 
@@ -91,8 +91,8 @@ defmodule KeenOptic.MatchWatcher.Worker do
     end
   end
 
-  defp schedule_fetch do
-    Process.send_after(self(), :fetch, @fetch_interval)
+  defp schedule_update do
+    Process.send_after(self(), :update, @update_interval)
   end
 
   defp subscribe(topic) do
