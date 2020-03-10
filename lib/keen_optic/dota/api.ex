@@ -1,7 +1,6 @@
-defmodule KeenOptic.Dota do
+defmodule KeenOptic.Dota.Api do
   @moduledoc """
-  Dota is an API client using [HTTPoison.Base](https://hexdocs.pm/httpoison/1.6.2/HTTPoison.Base.html)
-  to implement relevant Dota API calls.
+  Implements various HTTP API calls to the Dota2 APIs.
   """
 
   alias KeenOptic.Dota.{LiveGame, RealTimeStats}
@@ -12,12 +11,10 @@ defmodule KeenOptic.Dota do
   @live_game_path "/IDOTA2Match_570/GetTopLiveGame/v1/"
   @real_time_stats_path "/IDOTA2MatchStats_570/GetRealtimeStats/v1"
 
-  @default_query_params %{format: "JSON"}
-  @partner_params %{partner: 0}
+  @default_query_params %{format: "JSON", partner: 0}
 
   def live_matches do
-    with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
-           do_request(@live_game_path, @partner_params),
+    with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <- do_request(@live_game_path),
          {:ok, data} <- Jason.decode(body),
          list when is_list(list) <- Map.get(data, "game_list", :missing_key),
          {:ok, games} <-
@@ -33,8 +30,8 @@ defmodule KeenOptic.Dota do
       :missing_key ->
         {:error, "'game_list' key was missing from the response."}
 
-      error ->
-        error
+      {:error, error} ->
+        {:error, error}
     end
   end
 
@@ -62,7 +59,7 @@ defmodule KeenOptic.Dota do
   end
 
   # Private methods
-  defp do_request(path, params) when is_map(params) do
+  defp do_request(path, params \\ %{}) when is_map(params) do
     query =
       params
       |> Map.merge(@default_query_params)
