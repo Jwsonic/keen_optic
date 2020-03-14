@@ -15,7 +15,7 @@ defmodule KeenOptic.Dota do
   @default_query_params %{format: "JSON"}
   @partner_params %{partner: 0}
 
-  def live_matches do
+  def live_games do
     with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
            do_request(@live_game_path, @partner_params),
          {:ok, data} <- Jason.decode(body),
@@ -43,7 +43,7 @@ defmodule KeenOptic.Dota do
     with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
            do_request(@real_time_stats_path, %{server_steam_id: server_steam_id}),
          {:ok, data} <- Jason.decode(body),
-         {:ok, stats} <- RealTimeStats.from_map(data) do
+         {:ok, stats} <- RealTimeStats.new(data) do
       {:ok, stats}
     else
       {:ok, %HTTPoison.Response{status_code: 400}} ->

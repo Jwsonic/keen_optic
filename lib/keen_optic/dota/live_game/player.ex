@@ -1,4 +1,4 @@
-defmodule KeenOptic.Dota.Player do
+defmodule KeenOptic.Dota.LiveGame.Player do
   @moduledoc """
   A struct with data about a current player in a dota game.
   """

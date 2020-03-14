@@ -2,7 +2,9 @@ defmodule KeenOptic.Dota.RealTimeStats do
   @moduledoc """
   A struct with data about a current live dota game.
   """
-  use TypedStruct
+  use Ecto.Schema
+
+  import Ecto.Changeset
 
   alias __MODULE__
   alias KeenOptic.Dota.Match
@@ -11,36 +13,30 @@ defmodule KeenOptic.Dota.RealTimeStats do
   @radiant_id 2
   @dire_id 3
 
-  typedstruct do
-    field :match, Match.t(), enforce: true
-    field :teams, list(), enforce: true
-    field :buildings, list(), enforce: true
-    field :graph_data, Match.t(), enforce: true
-    field :delta_frame, boolean(), enforce: true
-    field :radiant, Team.t(), enforce: true
-    field :dire, Team.t(), enforce: true
+  @allowed_params ~w(match_id server_steam_id)a
+
+  @primary_key {:match_id, :id, autogenerate: false}
+  embedded_schema do
+    field :server_steam_id, :integer
+
+    embeds_one :match, Match
+    embeds_one :radiant, Team
+    embeds_one :dire, Team
   end
 
-  @spec from_map(map()) :: {:ok, RealTimeStats.t()} | {:error, String.t()}
-  def from_map(%{
-        "match" => match,
-        "teams" => teams,
-        "buildings" => buildings,
-        "graph_data" => graph_data
-      }) do
+  def new(params) when is_map(params) do
+    match = Map.get(params, "match")
+    teams = Map.get(params, "teams", [])
+
     with {:ok, match} <- Match.new(match),
          {:ok, radiant} <- extract_team(teams, @radiant_id),
          {:ok, dire} <- extract_team(teams, @dire_id) do
-      {:ok,
-       %RealTimeStats{
-         match: match,
-         teams: teams,
-         buildings: buildings,
-         graph_data: graph_data,
-         delta_frame: false,
-         radiant: radiant,
-         dire: dire
-       }}
+      params
+      |> (&cast(%RealTimeStats{}, &1, @allowed_params)).()
+      |> put_embed(:match, match)
+      |> put_embed(:radiant, radiant)
+      |> put_embed(:dire, dire)
+      |> apply_action(:insert)
     else
       {:error, error} -> {:error, error}
     end

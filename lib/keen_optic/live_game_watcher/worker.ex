@@ -1,6 +1,6 @@
-defmodule KeenOptic.MatchListWatcher.Worker do
+defmodule KeenOptic.LiveGameWatcher.Worker do
   @moduledoc """
-  `KeenOptic.MatchListWatcher.Worker` is a `GenServer` that fetches, stores, and notifies clients
+  `KeenOptic.LiveGameWatcher.Worker` is a `GenServer` that fetches, stores, and notifies clients
   about live game data.
   """
   use GenServer
@@ -10,22 +10,22 @@ defmodule KeenOptic.MatchListWatcher.Worker do
   alias KeenOptic.Dota
   alias Phoenix.PubSub
 
-  @ets_table :live_matche_list
-  @ets_key :match_list
+  @ets_table :live_games
+  @ets_key :games_list
 
   # Every 20 seconds
   @fetch_interval 20_000
 
-  @live_matches_topic "live_matches"
-  @live_matches_key :live_matches
+  @live_games_topic "live_games"
+  @live_games_key :live_games
 
   # Client methods
 
   @doc """
   Returns data about the currently live matches.
   """
-  @spec live_matches() :: {:ok, list(KeenOptic.Dota.LiveGame.t())} | {:error, String.t()}
-  def live_matches do
+  @spec live_games() :: {:ok, list(KeenOptic.Dota.LiveGame.t())} | {:error, String.t()}
+  def live_games do
     case :ets.lookup(@ets_table, @ets_key) do
       [{@ets_key, games}] -> {:ok, games}
       [] -> {:error, "No live games!"}
@@ -40,9 +40,9 @@ defmodule KeenOptic.MatchListWatcher.Worker do
   @doc """
   Subscribes a process to updates about live matches.
   """
-  @spec subscribe_live_matches() :: :ok | {:error, term()}
-  def subscribe_live_matches do
-    PubSub.subscribe(KeenOptic.PubSub, @live_matches_topic)
+  @spec subscribe_live_games() :: :ok | {:error, term()}
+  def subscribe_live_games do
+    PubSub.subscribe(KeenOptic.PubSub, @live_games_topic)
   end
 
   # Genserver callbacks
@@ -75,11 +75,11 @@ defmodule KeenOptic.MatchListWatcher.Worker do
   end
 
   defp update_games do
-    case Dota.live_matches() do
+    case Dota.live_games() do
       {:ok, games} ->
         :ets.insert(@ets_table, {@ets_key, games})
 
-        PubSub.broadcast(KeenOptic.PubSub, @live_matches_topic, {@live_matches_key, games})
+        PubSub.broadcast(KeenOptic.PubSub, @live_games_topic, {@live_games_key, games})
 
       {:error, message} ->
         Logger.error("Fetch games call failed with #{inspect(message)}")

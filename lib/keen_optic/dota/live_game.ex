@@ -36,7 +36,7 @@ defmodule KeenOptic.Dota.LiveGame do
   import KeenOptic.Ecto.Utils
 
   alias __MODULE__
-  alias KeenOptic.Dota.Player
+  alias KeenOptic.Dota.LiveGame.Player
 
   @required_params ~w(server_steam_id game_time spectators game_mode league_id)a
 

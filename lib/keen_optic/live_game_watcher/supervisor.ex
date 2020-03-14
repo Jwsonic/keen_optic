@@ -1,6 +1,6 @@
-defmodule KeenOptic.MatchListWatcher.Supervisor do
+defmodule KeenOptic.LiveGameWatcher.Supervisor do
   @moduledoc """
-  A `Supervisor` for the `MatchListWatcher` module.
+  A `Supervisor` for the `LiveGameWatcher` module.
   """
   use Supervisor
 
@@ -11,7 +11,7 @@ defmodule KeenOptic.MatchListWatcher.Supervisor do
   @impl true
   def init(_init_arg) do
     children = [
-      KeenOptic.MatchListWatcher.Worker
+      KeenOptic.LiveGameWatcher.Worker
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
