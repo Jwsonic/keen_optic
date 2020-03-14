@@ -20,8 +20,7 @@ defmodule KeenOptic.Dota do
            do_request(@live_game_path, @partner_params),
          {:ok, data} <- Jason.decode(body),
          list when is_list(list) <- Map.get(data, "game_list", :missing_key),
-         {:ok, games} <-
-           LiveGame.from_list(list) do
+         {:ok, games} <- LiveGame.new(list) do
       {:ok, games}
     else
       {:ok, %HTTPoison.Response{status_code: status_code}} ->

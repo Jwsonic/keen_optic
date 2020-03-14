@@ -1,6 +1,7 @@
 defmodule KeenOptic.MatchListWatcher.Worker do
   @moduledoc """
-  `Worker` is a `GenServer` that fetches, stores, and notifies clients about match list data.
+  `KeenOptic.MatchListWatcher.Worker` is a `GenServer` that fetches, stores, and notifies clients
+  about live game data.
   """
   use GenServer
 

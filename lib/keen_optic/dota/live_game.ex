@@ -1,105 +1,74 @@
 defmodule KeenOptic.Dota.LiveGame do
   @moduledoc """
   A struct with data about a current live dota game.
+
+  "activate_time": 1581969536,
+  "deactivate_time": 0,
+  "server_steam_id": 90132752650106887,
+  "lobby_id": 26538656905582663,
+  "league_id": 0,
+  "lobby_type": 7,
+  "game_time": 1345,
+  "delay": 120,
+  "spectators": 970,
+  "game_mode": 22,
+  "average_mmr": 8234,
+  "match_id": 5248032065,
+  "series_id": 0,
+  "sort_score": 9704,
+  "": 1581971072,
+  "radiant_lead": -3724,
+  "radiant_score": 15,
+  "dire_score": 16,
+  "players": [
+    {
+      "account_id": 129035220,
+      "hero_id": 111
+    },
+
+  ],
+  "building_state": 10092753
+
   """
-  use TypedStruct
+  use Ecto.Schema
+
+  import Ecto.Changeset
+  import KeenOptic.Ecto.Utils
 
   alias __MODULE__
-
   alias KeenOptic.Dota.Player
 
-  # "activate_time": 1581969536,
-  # "deactivate_time": 0,
-  # "server_steam_id": 90132752650106887,
-  # "lobby_id": 26538656905582663,
-  # "league_id": 0,
-  # "lobby_type": 7,
-  # "game_time": 1345,
-  # "delay": 120,
-  # "spectators": 970,
-  # "game_mode": 22,
-  # "average_mmr": 8234,
-  # "match_id": 5248032065,
-  # "series_id": 0,
-  # "sort_score": 9704,
-  # "": 1581971072,
-  # "radiant_lead": -3724,
-  # "radiant_score": 15,
-  # "dire_score": 16,
-  # "players": [
-  #   {
-  #     "account_id": 129035220,
-  #     "hero_id": 111
-  #   },
-  #
-  # ],
-  # "building_state": 10092753
+  @required_params ~w(server_steam_id game_time spectators game_mode league_id game_state picks bans)a
 
-  typedstruct do
-    field :activate_time, non_neg_integer()
-    field :server_steam_id, non_neg_integer(), enforce: true
-    field :lobby_id, non_neg_integer()
-    field :lobby_type, non_neg_integer()
-    field :game_time, non_neg_integer(), enforce: true
-    field :delay, non_neg_integer()
-    field :spectators, non_neg_integer(), enforce: true
-    field :game_mode, non_neg_integer(), enforce: true
-    field :average_mmr, non_neg_integer(), enforce: true
-    field :match_id, non_neg_integer()
-    field :series_id, non_neg_integer()
-    field :last_update_time, non_neg_integer()
-    field :radiant_lead, integer(), enforce: true
-    field :radiant_score, non_neg_integer(), enforce: true
-    field :dire_score, non_neg_integer(), enforce: true
-    field :players, list(map()), enforce: true
-    field :building_state, integer()
+  @primary_key {:server_steam_id, :id, autogenerate: false}
+  embedded_schema do
+    field :game_time, :integer
+    field :spectators, :integer
+    field :game_mode, :integer
+    field :radiant_lead, :integer
+    field :average_mmr, :integer
+    field :dire_score, :integer
+    field :radiant_score, :integer
+
+    embeds_many :players, Player
   end
 
-  @spec from_list(list(map)) :: {:ok, list(LiveGame.t())} | {:error, String.t()}
-  def from_list(list) when is_list(list) do
-    results =
-      list
-      |> Enum.map(&from_map/1)
-      |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
-
-    case results[:error] do
-      nil -> {:ok, results[:ok]}
-      [error | _rest] -> error
-    end
+  def new(list) when is_list(list) do
+    reduce_results(list, &new/1)
   end
 
-  @spec from_map(map()) :: {:ok, list(LiveGame.t())} | {:error, String.t()}
-  def from_map(
-        %{
-          "average_mmr" => average_mmr,
-          "dire_score" => dire_score,
-          "game_mode" => game_mode,
-          "game_time" => game_time,
-          "radiant_lead" => radiant_lead,
-          "radiant_score" => radiant_score,
-          "server_steam_id" => server_steam_id,
-          "spectators" => spectators
-        } = data
-      ) do
-    players = Map.get(data, "players", [])
+  def new(params) when is_map(params) do
+    players = params |> Map.get("players", []) |> Player.from_list()
 
-    case Player.from_list(players) do
+    case players do
       {:ok, players} ->
-        {:ok,
-         %LiveGame{
-           players: players,
-           server_steam_id: server_steam_id,
-           game_time: game_time,
-           spectators: spectators,
-           game_mode: game_mode,
-           average_mmr: average_mmr,
-           radiant_lead: radiant_lead,
-           radiant_score: radiant_score,
-           dire_score: dire_score
-         }}
+        params
+        |> (&cast(%LiveGame{}, &1, @required_params)).()
+        |> put_embed(:players, players)
+        |> apply_action(:insert)
 
-      {:error, message} ->
-        {:error, message}
+      {:error, error} ->
+        {:error, error}
     end
   end
 end

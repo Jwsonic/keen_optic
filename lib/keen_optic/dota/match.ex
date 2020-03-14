@@ -19,7 +19,7 @@ defmodule KeenOptic.Dota.Match do
   @primary_key {:server_steam_id, :id, autogenerate: false}
   embedded_schema do
     field :match_id, :integer
-    field :game_time, :time
+    field :game_time, :integer
     field :game_mode, :integer
     field :league_id, :integer
     field :game_state, :integer
