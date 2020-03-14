@@ -44,7 +44,6 @@ defmodule KeenOptic.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 1.6"},
-      {:typed_struct, "~> 0.1.4"},
       {:phoenix_live_view, "~> 0.8.0"},
 
       # Dev only deps
