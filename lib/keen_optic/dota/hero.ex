@@ -27,9 +27,14 @@ defmodule KeenOptic.Dota.Hero do
     end
   end
 
-  @spec hero(non_neg_integer()) :: Hero.t() | :unknown
+  @spec hero(non_neg_integer()) :: Hero.t()
   def hero(hero_id) do
-    Map.get(heroes(), hero_id, :unknown)
+    # TODO Make this an unknown image/name
+    Map.get(heroes(), hero_id, %Hero{
+      id: 105,
+      image_url: "/images/heroes/icons/techies.png",
+      name: "npc_dota_hero_techies"
+    })
   end
 
   # This has to be a function so we can reference the struct.

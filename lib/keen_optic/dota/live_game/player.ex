@@ -2,36 +2,33 @@ defmodule KeenOptic.Dota.Player do
   @moduledoc """
   A struct with data about a current player in a dota game.
   """
-  use TypedStruct
+  use Ecto.Schema
+
+  import Ecto.Changeset
+  import KeenOptic.Ecto.Utils
 
   alias __MODULE__
+  alias KeenOptic.Dota.Hero
 
-  typedstruct do
-    field :account_id, non_neg_integer(), enforce: true
-    field :hero_id, non_neg_integer(), enforce: true
+  @required_params [:account_id, :hero_id]
+
+  @primary_key {:account_id, :id, autogenerate: false}
+  embedded_schema do
+    field :hero_id, :integer
+
+    embeds_one :hero, Hero
   end
 
-  @spec from_list(list(map())) :: {:ok, list(Player.t())} | {:error, String.t()}
-  def from_list(list) when is_list(list) do
-    results =
-      list
-      |> Enum.map(&from_map/1)
-      |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
-
-    case results[:error] do
-      nil -> {:ok, results[:ok]}
-      [error | _rest] -> error
-    end
+  def new(params) when is_list(params) do
+    reduce_results(params, &new/1)
   end
 
-  @spec from_map(map()) :: Player.t() | {:error, String.t()}
-  def from_map(%{"account_id" => account_id, "hero_id" => hero_id}) do
-    {:ok,
-     %Player{
-       account_id: account_id,
-       hero_id: hero_id
-     }}
-  end
+  def new(params) when is_map(params) do
+    hero = params |> Map.get("hero_id") |> Hero.hero()
 
-  def from_map(map), do: {:error, "Does not match Player shape #{inspect(map)}."}
+    params
+    |> (&cast(%Player{}, &1, @required_params)).()
+    |> put_embed(:hero, hero)
+    |> apply_action(:insert)
+  end
 end

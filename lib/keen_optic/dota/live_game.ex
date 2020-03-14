@@ -38,7 +38,7 @@ defmodule KeenOptic.Dota.LiveGame do
   alias __MODULE__
   alias KeenOptic.Dota.Player
 
-  @required_params ~w(server_steam_id game_time spectators game_mode league_id game_state picks bans)a
+  @required_params ~w(server_steam_id game_time spectators game_mode league_id)a
 
   @primary_key {:server_steam_id, :id, autogenerate: false}
   embedded_schema do
@@ -49,6 +49,7 @@ defmodule KeenOptic.Dota.LiveGame do
     field :average_mmr, :integer
     field :dire_score, :integer
     field :radiant_score, :integer
+    field :league_id, :integer
 
     embeds_many :players, Player
   end
@@ -58,7 +59,7 @@ defmodule KeenOptic.Dota.LiveGame do
   end
 
   def new(params) when is_map(params) do
-    players = params |> Map.get("players", []) |> Player.from_list()
+    players = params |> Map.get("players", []) |> Player.new()
 
     case players do
       {:ok, players} ->
