@@ -6,7 +6,6 @@ defmodule KeenOpticWeb.LiveView.Match do
 
   require Logger
 
-  alias KeenOptic.Dota.Hero
   alias KeenOptic.MatchWatcher.Worker, as: MatchWatcher
 
   # LiveView callbacks
@@ -17,24 +16,20 @@ defmodule KeenOpticWeb.LiveView.Match do
       <img class="mini-map" src="/images/minimap.png" />
 
       <%= for player <- @match.radiant.players  do %>
-        <img src="<%= hero_image(player.hero_id) %>" class="circle" style="bottom: <%= to_percent(player.y) %>%; right: <%= to_percent(player.x) %>%;"/>
+        <img
+        src="<%= player.hero.image_url %>"
+        class="circle"
+        style="bottom: <%= to_percent(player.y) %>%; right: <%= to_percent(player.x) %>%;"/>
       <% end %>
 
       <%= for player <- @match.dire.players do %>
         <img
-        src="<%= hero_image(player.hero_id) %>"
+        src="<%= player.hero.image_url %>"
         class="circle"
         style="bottom: <%= to_percent(player.y) %>%; right: <%= to_percent(player.x) %>%;"/>
       <% end %>
     </div>
     """
-  end
-
-  defp hero_image(hero_id) do
-    case Hero.hero(hero_id) do
-      %Hero{image_url: image_url} -> image_url
-      :unknown -> ""
-    end
   end
 
   defp to_percent(num) do

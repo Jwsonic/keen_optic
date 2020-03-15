@@ -24,36 +24,31 @@ defmodule KeenOptic.RealTimeStats.Player do
   }
 
   """
+  use KeenOptic.ExternalData
 
-  use Ecto.Schema
-
-  import Ecto.Changeset
-  import KeenOptic.Ecto.Utils
-
-  alias __MODULE__
-
-  @type t() :: %Player{}
-
-  @required_params ~w(account_id hero_id name x y)a
-  @rename_pairs [{"heroid", "hero_id"}, {"accountid", "account_id"}]
+  alias KeenOptic.Dota.Hero
 
   @primary_key {:account_id, :id, autogenerate: false}
   embedded_schema do
-    field :hero_id, :integer
     field :name, :string
     field :x, :float
     field :y, :float
+
+    embeds_one :hero, Hero
   end
 
-  @spec new(map() | list(map())) :: {:ok, Player.t()} | {:error, String.t()}
-  def new(params) when is_map(params) do
-    params
-    |> rename_params(@rename_pairs)
-    |> (&cast(%Player{}, &1, @required_params)).()
-    |> apply_action(:insert)
+  @impl true
+  def coerce_params(params) do
+    case Map.get(params, "accountid") do
+      nil -> {:error, "Missing key 'accountid'."}
+      account_id -> {:ok, Map.put(params, "account_id", account_id)}
+    end
   end
 
-  def new(list) when is_list(list) do
-    reduce_results(list, &new/1)
+  @impl true
+  def extra_changes(changeset, params) do
+    hero = params |> Map.get("heroid") |> Hero.hero()
+
+    put_embed(changeset, :hero, hero)
   end
 end
