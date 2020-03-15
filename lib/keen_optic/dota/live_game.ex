@@ -30,15 +30,9 @@ defmodule KeenOptic.Dota.LiveGame do
   "building_state": 10092753
 
   """
-  use Ecto.Schema
+  use KeenOptic.ExternalData
 
-  import Ecto.Changeset
-  import KeenOptic.Ecto.Utils
-
-  alias __MODULE__
   alias KeenOptic.Dota.LiveGame.Player
-
-  @required_params ~w(server_steam_id game_time spectators game_mode league_id)a
 
   @primary_key {:server_steam_id, :id, autogenerate: false}
   embedded_schema do
@@ -54,22 +48,13 @@ defmodule KeenOptic.Dota.LiveGame do
     embeds_many :players, Player
   end
 
-  def new(list) when is_list(list) do
-    reduce_results(list, &new/1)
-  end
-
-  def new(params) when is_map(params) do
+  @impl true
+  def extra_changes(changeset, params) do
     players = params |> Map.get("players", []) |> Player.new()
 
     case players do
-      {:ok, players} ->
-        params
-        |> (&cast(%LiveGame{}, &1, @required_params)).()
-        |> put_embed(:players, players)
-        |> apply_action(:insert)
-
-      {:error, error} ->
-        {:error, error}
+      {:ok, players} -> put_embed(changeset, :players, players)
+      _ -> changeset
     end
   end
 end

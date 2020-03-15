@@ -20,8 +20,8 @@ defmodule KeenOptic.DotaTest do
 
         assert [
                  %KeenOptic.Dota.LiveGame{
-                   average_mmr: nil,
-                   dire_score: nil,
+                   average_mmr: 7908,
+                   dire_score: 23,
                    game_mode: 22,
                    game_time: 2543,
                    league_id: 0,
@@ -107,8 +107,8 @@ defmodule KeenOptic.DotaTest do
                        }
                      }
                    ],
-                   radiant_lead: nil,
-                   radiant_score: nil,
+                   radiant_lead: -5450,
+                   radiant_score: 36,
                    server_steam_id: 90_133_485_951_488_011,
                    spectators: 741
                  }
