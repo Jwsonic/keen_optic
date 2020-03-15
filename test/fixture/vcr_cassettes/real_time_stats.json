@@ -1,0 +1,25 @@
+[
+  {
+    "request": {
+      "body": "",
+      "headers": [],
+      "method": "get",
+      "options": [],
+      "request_body": "",
+      "url": "https://api.steampowered.com/IDOTA2MatchStats_570/GetRealtimeStats/v1"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\n\"match\":{\n\"server_steam_id\":90133486099891208,\n\"matchid\":5294873401,\n\"timestamp\":219,\n\"game_time\":-16,\n\"game_mode\":22,\n\"league_id\":0,\n\"league_node_id\":0,\n\"game_state\":8\n},\n\"teams\":[\n{\n\"team_number\":2,\n\"team_id\":0,\n\"team_name\":\"\",\n\"team_tag\":\"\",\n\"team_logo\":0,\n\"score\":0,\n\"net_worth\":0,\n\"team_logo_url\":\"\",\n\"players\":[\n{\n\"accountid\":96189126,\n\"playerid\":0,\n\"name\":\".safelane idc\",\n\"team\":2,\n\"heroid\":0,\n\"level\":0,\n\"kill_count\":0,\n\"death_count\":0,\n\"assists_count\":0,\n\"denies_count\":0,\n\"lh_count\":0,\n\"gold\":0,\n\"x\":0,\n\"y\":0,\n\"net_worth\":0\n},\n{\n\"accountid\":25907144,\n\"playerid\":1,\n\"name\":\"土猫\",\n\"team\":2,\n\"heroid\":0,\n\"level\":0,\n\"kill_count\":0,\n\"death_count\":0,\n\"assists_count\":0,\n\"denies_count\":0,\n\"lh_count\":0,\n\"gold\":0,\n\"x\":0,\n\"y\":0,\n\"net_worth\":0\n},\n{\n\"accountid\":366396778,\n\"playerid\":2,\n\"name\":\"mode Zang64000x4\",\n\"team\":2,\n\"heroid\":0,\n\"level\":0,\n\"kill_count\":0,\n\"death_count\":0,\n\"assists_count\":0,\n\"denies_count\":0,\n\"lh_count\":0,\n\"gold\":0,\n\"x\":0,\n\"y\":0,\n\"net_worth\":0\n},\n{\n\"accountid\":54580962,\n\"playerid\":3,\n\"name\":\"Aang\",\n\"team\":2,\n\"heroid\":0,\n\"level\":0,\n\"kill_count\":0,\n\"death_count\":0,\n\"assists_count\":0,\n\"denies_count\":0,\n\"lh_count\":0,\n\"gold\":0,\n\"x\":0,\n\"y\":0,\n\"net_worth\":0\n},\n{\n\"accountid\":100483784,\n\"playerid\":4,\n\"name\":\"Max2\",\n\"team\":2,\n\"heroid\":0,\n\"level\":0,\n\"kill_count\":0,\n\"death_count\":0,\n\"assists_count\":0,\n\"denies_count\":0,\n\"lh_count\":0,\n\"gold\":0,\n\"x\":0,\n\"y\":0,\n\"net_worth\":0\n}\n]\n\n},\n{\n\"team_number\":3,\n\"team_id\":0,\n\"team_name\":\"\",\n\"team_tag\":\"\",\n\"team_logo\":0,\n\"score\":0,\n\"net_worth\":0,\n\"team_logo_url\":\"\",\n\"players\":[\n{\n\"accountid\":99394623,\n\"playerid\":5,\n\"name\":\"get me out\",\n\"team\":3,\n\"heroid\":0,\n\"level\":0,\n\"kill_count\":0,\n\"death_count\":0,\n\"assists_count\":0,\n\"denies_count\":0,\n\"lh_count\":0,\n\"gold\":0,\n\"x\":0,\n\"y\":0,\n\"net_worth\":0\n},\n{\n\"accountid\":321580662,\n\"playerid\":6,\n\"name\":\"Тварь\",\n\"team\":3,\n\"heroid\":0,\n\"level\":0,\n\"kill_count\":0,\n\"death_count\":0,\n\"assists_count\":0,\n\"denies_count\":0,\n\"lh_count\":0,\n\"gold\":0,\n\"x\":0,\n\"y\":0,\n\"net_worth\":0\n},\n{\n\"accountid\":73562326,\n\"playerid\":7,\n\"name\":\"arturo b\",\n\"team\":3,\n\"heroid\":0,\n\"level\":0,\n\"kill_count\":0,\n\"death_count\":0,\n\"assists_count\":0,\n\"denies_count\":0,\n\"lh_count\":0,\n\"gold\":0,\n\"x\":0,\n\"y\":0,\n\"net_worth\":0\n},\n{\n\"accountid\":72312627,\n\"playerid\":8,\n\"name\":\"kimchi\",\n\"team\":3,\n\"heroid\":0,\n\"level\":0,\n\"kill_count\":0,\n\"death_count\":0,\n\"assists_count\":0,\n\"denies_count\":0,\n\"lh_count\":0,\n\"gold\":0,\n\"x\":0,\n\"y\":0,\n\"net_worth\":0\n},\n{\n\"accountid\":317880638,\n\"playerid\":9,\n\"name\":\"light your sword'\",\n\"team\":3,\n\"heroid\":0,\n\"level\":0,\n\"kill_count\":0,\n\"death_count\":0,\n\"assists_count\":0,\n\"denies_count\":0,\n\"lh_count\":0,\n\"gold\":0,\n\"x\":0,\n\"y\":0,\n\"net_worth\":0\n}\n]\n\n}\n]\n,\n\"buildings\":[\n{\n\"team\":0,\n\"heading\":0,\n\"type\":0,\n\"lane\":0,\n\"tier\":0,\n\"x\":0,\n\"y\":0,\n\"destroyed\":true\n},\n{\n\"team\":0,\n\"heading\":0,\n\"type\":0,\n\"lane\":0,\n\"tier\":0,\n\"x\":0,\n\"y\":0,\n\"destroyed\":true\n}\n]\n,\n\"graph_data\":{\n\"graph_gold\":[\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0,\n0\n]\n\n},\n\"delta_frame\":true\n}",
+      "headers": {
+        "Content-Type": "application/json; charset=UTF-8",
+        "Expires": "Sun, 15 Mar 2020 21:48:06 GMT",
+        "Date": "Sun, 15 Mar 2020 21:48:06 GMT",
+        "Content-Length": "3271",
+        "Connection": "keep-alive"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]

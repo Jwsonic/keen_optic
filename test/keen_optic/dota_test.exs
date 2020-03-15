@@ -117,4 +117,108 @@ defmodule KeenOptic.DotaTest do
       end
     end
   end
+
+  describe "Dota.real_time_stats/1" do
+    test "it fetches and parses real time stats correctly" do
+      use_cassette "real_time_stats" do
+        assert {:ok,
+                %KeenOptic.Dota.RealTimeStats{
+                  dire: %KeenOptic.RealTimeStats.Team{
+                    net_worth: 0,
+                    players: [
+                      %KeenOptic.RealTimeStats.Player{
+                        account_id: 99_394_623,
+                        hero_id: 0,
+                        name: "get me out",
+                        x: 0.0,
+                        y: 0.0
+                      },
+                      %KeenOptic.RealTimeStats.Player{
+                        account_id: 321_580_662,
+                        hero_id: 0,
+                        name: "Тварь",
+                        x: 0.0,
+                        y: 0.0
+                      },
+                      %KeenOptic.RealTimeStats.Player{
+                        account_id: 73_562_326,
+                        hero_id: 0,
+                        name: "arturo b",
+                        x: 0.0,
+                        y: 0.0
+                      },
+                      %KeenOptic.RealTimeStats.Player{
+                        account_id: 72_312_627,
+                        hero_id: 0,
+                        name: "kimchi",
+                        x: 0.0,
+                        y: 0.0
+                      },
+                      %KeenOptic.RealTimeStats.Player{
+                        account_id: 317_880_638,
+                        hero_id: 0,
+                        name: "light your sword'",
+                        x: 0.0,
+                        y: 0.0
+                      }
+                    ],
+                    score: 0
+                  },
+                  match: %KeenOptic.Dota.Match{
+                    bans: [],
+                    game_mode: 22,
+                    game_state: 8,
+                    game_time: -16,
+                    league_id: 0,
+                    match_id: 5_294_873_401,
+                    picks: [],
+                    server_steam_id: 90_133_486_099_891_208
+                  },
+                  match_id: nil,
+                  radiant: %KeenOptic.RealTimeStats.Team{
+                    net_worth: 0,
+                    players: [
+                      %KeenOptic.RealTimeStats.Player{
+                        account_id: 96_189_126,
+                        hero_id: 0,
+                        name: ".safelane idc",
+                        x: 0.0,
+                        y: 0.0
+                      },
+                      %KeenOptic.RealTimeStats.Player{
+                        account_id: 25_907_144,
+                        hero_id: 0,
+                        name: "土猫",
+                        x: 0.0,
+                        y: 0.0
+                      },
+                      %KeenOptic.RealTimeStats.Player{
+                        account_id: 366_396_778,
+                        hero_id: 0,
+                        name: "mode Zang64000x4",
+                        x: 0.0,
+                        y: 0.0
+                      },
+                      %KeenOptic.RealTimeStats.Player{
+                        account_id: 54_580_962,
+                        hero_id: 0,
+                        name: "Aang",
+                        x: 0.0,
+                        y: 0.0
+                      },
+                      %KeenOptic.RealTimeStats.Player{
+                        account_id: 100_483_784,
+                        hero_id: 0,
+                        name: "Max2",
+                        x: 0.0,
+                        y: 0.0
+                      }
+                    ],
+                    score: 0
+                  },
+                  server_steam_id: nil
+                }} = Dota.real_time_stats(90_133_486_099_891_208)
+      end
+    end
+  end
 end

@@ -2,18 +2,13 @@ defmodule KeenOptic.Dota.RealTimeStats do
   @moduledoc """
   A struct with data about a current live dota game.
   """
-  use Ecto.Schema
+  use KeenOptic.ExternalData
 
-  import Ecto.Changeset
-
-  alias __MODULE__
   alias KeenOptic.Dota.Match
   alias KeenOptic.RealTimeStats.Team
 
   @radiant_id 2
   @dire_id 3
-
-  @allowed_params ~w(match_id server_steam_id)a
 
   @primary_key {:match_id, :id, autogenerate: false}
   embedded_schema do
@@ -24,21 +19,20 @@ defmodule KeenOptic.Dota.RealTimeStats do
     embeds_one :dire, Team
   end
 
-  def new(params) when is_map(params) do
+  @impl true
+  def extra_changes(changeset, params) do
     match = Map.get(params, "match")
     teams = Map.get(params, "teams", [])
 
     with {:ok, match} <- Match.new(match),
          {:ok, radiant} <- extract_team(teams, @radiant_id),
          {:ok, dire} <- extract_team(teams, @dire_id) do
-      params
-      |> (&cast(%RealTimeStats{}, &1, @allowed_params)).()
+      changeset
       |> put_embed(:match, match)
       |> put_embed(:radiant, radiant)
       |> put_embed(:dire, dire)
-      |> apply_action(:insert)
     else
-      {:error, error} -> {:error, error}
+      {:error, _error} = error -> error
     end
   end
 

@@ -30,35 +30,24 @@ defmodule KeenOptic.RealTimeStats.Team do
     }
   ]
   """
-  use Ecto.Schema
+  use KeenOptic.ExternalData
 
-  import Ecto.Changeset
-
-  alias __MODULE__
   alias KeenOptic.RealTimeStats.Player
 
-  @allowed_params ~w(net_worth score players)a
-
-  @type t() :: %Team{}
-
+  @primary_key false
   embedded_schema do
     field :net_worth, :integer
     field :score, :integer
     embeds_many :players, Player
   end
 
-  def new(params) do
+  @impl true
+  def extra_changes(changeset, params) do
     players = params |> Map.get("players", []) |> Player.new()
 
     case players do
-      {:ok, players} ->
-        params
-        |> (&cast(%Player{}, &1, @allowed_params)).()
-        |> put_embed(:players, players)
-        |> apply_action(:insert)
-
-      {:error, error} ->
-        {:error, error}
+      {:ok, players} -> put_embed(changeset, :players, players)
+      {:error, _error} = error -> error
     end
   end
 end

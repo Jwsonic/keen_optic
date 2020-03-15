@@ -2,19 +2,12 @@ defmodule KeenOptic.Dota.Match do
   @moduledoc """
   A struct with match data about a current live dota game.
   """
+  use KeenOptic.ExternalData
 
-  use Ecto.Schema
-
-  import Ecto.Changeset
-  import KeenOptic.Ecto.Utils
-
-  alias __MODULE__
   alias KeenOptic.Dota.PickBan
 
-  @type t() :: %Match{}
-
-  @required_params ~w(server_steam_id matchid game_time game_mode league_id game_state picks bans)a
-  @rename_pairs [{"matchid", "match_id"}]
+  @picks_key "picks"
+  @bans_key "bans"
 
   @primary_key {:server_steam_id, :id, autogenerate: false}
   embedded_schema do
@@ -27,19 +20,21 @@ defmodule KeenOptic.Dota.Match do
     embeds_many :bans, PickBan
   end
 
-  @picks_key "picks"
-  @bans_key "bans"
+  @impl true
+  def coerce_params(params) do
+    case Map.get(params, "matchid") do
+      nil -> {:error, "Missing key 'matchid'."}
+      match_id -> {:ok, Map.put(params, "match_id", match_id)}
+    end
+  end
 
-  @spec new(map()) :: {:ok, Match.t()} | {:error, Ecto.Changeset.t()}
-  def new(params) do
+  @impl true
+  def extra_changes(changeset, params) do
     with {:ok, picks} <- extract(params, @picks_key),
          {:ok, bans} <- extract(params, @bans_key) do
-      params
-      |> rename_params(@rename_pairs)
-      |> (&cast(%Match{}, &1, @required_params)).()
+      changeset
       |> put_embed(:picks, picks)
       |> put_embed(:bans, bans)
-      |> apply_action(:insert)
     else
       {:error, error} -> {:error, error}
     end
