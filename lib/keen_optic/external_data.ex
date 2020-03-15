@@ -30,7 +30,7 @@ defmodule KeenOptic.ExternalData do
   end
 
   defmacro __before_compile__(env) do
-    quote do
+    quote location: :keep do
       def new(list) when is_list(list) do
         results =
           list
@@ -50,6 +50,7 @@ defmodule KeenOptic.ExternalData do
           {:ok, data}
         else
           {:error, %Ecto.Changeset{} = changeset} ->
+            IO.inspect(changeset)
             {:error, error_string(changeset)}
 
           {:error, _error} = error ->
@@ -75,14 +76,11 @@ defmodule KeenOptic.ExternalData do
 
       defp error_string(%Ecto.Changeset{} = changeset) do
         changeset
-        |> Ecto.Changeset.traverse_errors(fn {msg, opts} ->
-          Enum.reduce(opts, msg, fn {key, value}, acc ->
-            String.replace(acc, "%{#{key}}", to_string(value))
-          end)
-        end)
+        |> Ecto.Changeset.traverse_errors(&elem(&1, 0))
         |> Enum.reduce("", fn {key, value}, acc ->
-          "#{acc} #{Atom.to_string(key)} #{value}."
+          "#{acc}#{Atom.to_string(key)} #{value}. "
         end)
+        |> String.trim_trailing()
       end
     end
   end
