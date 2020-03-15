@@ -1,6 +1,10 @@
 defmodule KeenOptic.ExternalData do
+  @moduledoc """
+  A macro for building structs from maps of data from an external source.
+  """
+
   @doc """
-  Invoked before attempting to cast params. Allow the implementer to coerce external params
+  Invoked before attempting to cast params. Allows the implementer to coerce external params
   into a shape that will cast nicely into their struct.
   """
   @callback coerce_params(map()) :: {:ok, map()} | {:error, String.t()}
@@ -50,7 +54,6 @@ defmodule KeenOptic.ExternalData do
           {:ok, data}
         else
           {:error, %Ecto.Changeset{} = changeset} ->
-            IO.inspect(changeset)
             {:error, error_string(changeset)}
 
           {:error, _error} = error ->
