@@ -19,7 +19,8 @@ defmodule KeenOptic.Dota do
     with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
            do_request(@live_game_path, @partner_params),
          {:ok, data} <- Jason.decode(body),
-         list when is_list(list) <- Map.get(data, "game_list", :missing_key),
+         list when is_list(list) <-
+           Map.get(data, "game_list", :missing_key),
          {:ok, games} <- LiveGame.new(list) do
       {:ok, games}
     else
@@ -32,7 +33,7 @@ defmodule KeenOptic.Dota do
       :missing_key ->
         {:error, "'game_list' key was missing from the response."}
 
-      error ->
+      {:error, _error} = error ->
         error
     end
   end
