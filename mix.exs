@@ -51,7 +51,8 @@ defmodule KeenOptic.MixProject do
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:dialyxir, "~> 1.0.0-rc.7", only: [:dev], runtime: false},
       {:credo, "~> 1.3.0-rc1", only: [:dev], runtime: false},
-      {:mix_audit, "~> 0.1", only: [:dev, :test], runtime: false}
+      {:mix_audit, "~> 0.1", only: [:dev, :test], runtime: false},
+      {:exvcr, "~> 0.11", only: [:dev, :test]}
 
       # Test only deps
     ]

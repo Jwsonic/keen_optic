@@ -7,13 +7,11 @@ defmodule KeenOptic.Application do
 
   def start(_type, _args) do
     # List all child processes to be supervised
-    children = [
-      # Start the endpoint when the application starts
-      KeenOpticWeb.Endpoint,
-      KeenOptic.LiveGameWatcher.Supervisor,
-      KeenOptic.MatchWatcher.Supervisor,
-      KeenOptic.MatchWatcher.Registry
-    ]
+    children =
+      [
+        # Start the endpoint when the application starts
+        KeenOpticWeb.Endpoint
+      ] ++ env_children(Mix.env())
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
@@ -26,5 +24,18 @@ defmodule KeenOptic.Application do
   def config_change(changed, _new, removed) do
     KeenOpticWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  # Don't start watchers in tests
+  defp env_children(:test) do
+    []
+  end
+
+  defp env_children(_dev_or_prod) do
+    [
+      KeenOptic.LiveGameWatcher.Supervisor,
+      KeenOptic.MatchWatcher.Supervisor,
+      KeenOptic.MatchWatcher.Registry
+    ]
   end
 end
