@@ -5,7 +5,7 @@ defmodule KeenOpticWeb.LiveView.MatchesList do
 
   use Phoenix.LiveView
 
-  alias KeenOptic.LiveGameWatcher.Worker, as: LiveGameWatcher
+  alias KeenOptic.LiveGamesWatcher.Worker, as: LiveGamesWatcher
   alias KeenOpticWeb.LiveView.Match
   alias KeenOpticWeb.Router.Helpers, as: Routes
 
@@ -26,12 +26,12 @@ defmodule KeenOpticWeb.LiveView.MatchesList do
 
   def mount(_params, _session, socket) do
     games =
-      case LiveGameWatcher.live_games() do
+      case LiveGamesWatcher.live_games() do
         {:ok, games} -> games
         _ -> []
       end
 
-    LiveGameWatcher.subscribe_live_games()
+    LiveGamesWatcher.subscribe_live_games()
 
     {:ok, assign(socket, :games, games)}
   end

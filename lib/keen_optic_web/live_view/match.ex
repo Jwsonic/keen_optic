@@ -7,6 +7,7 @@ defmodule KeenOpticWeb.LiveView.Match do
   require Logger
 
   alias KeenOptic.MatchWatcher.Worker, as: MatchWatcher
+  alias KeenOpticWeb.LiveView.Match.PlayerComponent
 
   # LiveView callbacks
 
@@ -16,24 +17,14 @@ defmodule KeenOpticWeb.LiveView.Match do
       <img class="mini-map" src="/images/minimap.png" />
 
       <%= for player <- @match.radiant.players  do %>
-        <img
-        src="<%= player.hero.image_url %>"
-        class="circle"
-        style="bottom: <%= to_percent(player.y) %>%; right: <%= to_percent(player.x) %>%;"/>
+        <%= live_component @socket, PlayerComponent, player: player %>
       <% end %>
 
       <%= for player <- @match.dire.players do %>
-        <img
-        src="<%= player.hero.image_url %>"
-        class="circle"
-        style="bottom: <%= to_percent(player.y) %>%; right: <%= to_percent(player.x) %>%;"/>
+        <%= live_component @socket, PlayerComponent, player: player %>
       <% end %>
     </div>
     """
-  end
-
-  defp to_percent(num) do
-    Float.round(50 + num * 50, 2)
   end
 
   def mount(params, _session, socket) do

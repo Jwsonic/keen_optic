@@ -1,6 +1,6 @@
-defmodule KeenOptic.LiveGameWatcher.Worker do
+defmodule KeenOptic.LiveGamesWatcher.Worker do
   @moduledoc """
-  `KeenOptic.LiveGameWatcher.Worker` is a `GenServer` that fetches, stores, and notifies clients
+  `KeenOptic.LiveGamesWatcher.Worker` is a `GenServer` that fetches, stores, and notifies clients
   about live game data.
   """
   use GenServer

@@ -33,7 +33,7 @@ defmodule KeenOptic.Application do
 
   defp env_children(_dev_or_prod) do
     [
-      KeenOptic.LiveGameWatcher.Supervisor,
+      KeenOptic.LiveGamesWatcher.Supervisor,
       KeenOptic.MatchWatcher.Supervisor,
       KeenOptic.MatchWatcher.Registry
     ]
