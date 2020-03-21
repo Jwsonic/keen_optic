@@ -46,7 +46,6 @@ defmodule KeenOpticWeb.LiveView.Match do
   # Genserver callbacks
 
   def handle_info({:match_update, match}, socket) do
-    Logger.info("New match data.")
     {:noreply, assign(socket, :match, match)}
   end
 

@@ -8,18 +8,12 @@ defmodule KeenOpticWeb.LiveView.Match.PlayerComponent do
     <img
       src="<%= @player.hero.image_url %>"
       class="circle"
-      style="top: <%= top_percent(@player) %>%; left: <%= to_percent(@player.x) %>%;"
+      style="bottom: <%= to_percent(@player.y) %>%; left: <%= to_percent(@player.x) %>%;"
     />
     """
   end
 
-  defp top_percent(%{hero: %{name: name}, y: y}) do
-    Logger.info(name)
-    Logger.info("#{y}", label: :top)
-    Float.round(50 + y * -50, 2)
-  end
-
   defp to_percent(num) do
-    Float.round(num * -100, 2)
+    num |> Kernel.+(0.5) |> Kernel.*(100.0) |> Float.round(2)
   end
 end
