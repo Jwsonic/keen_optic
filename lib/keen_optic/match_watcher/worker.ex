@@ -31,6 +31,8 @@ defmodule KeenOptic.MatchWatcher.Worker do
   """
   @spec get_match(non_neg_integer()) :: {:ok, RealTimeStats.t()} | :no_match
   def get_match(match_id) do
+    maybe_start_worker(match_id)
+
     case :ets.lookup(@ets_table, match_id) do
       [{^match_id, match}] -> {:ok, match}
       [] -> :no_match
@@ -96,15 +98,19 @@ defmodule KeenOptic.MatchWatcher.Worker do
   end
 
   defp subscribe(topic) do
+    Logger.info("Subbing on #{topic}")
     PubSub.subscribe(KeenOptic.PubSub, topic)
   end
 
   defp update_match(match_id) do
+    Logger.info("Updating")
+
     case Dota.real_time_stats(match_id) do
       {:ok, match} ->
         :ets.insert(@ets_table, {match_id, match})
 
         topic = build_topic(match_id)
+        Logger.info("broadcast on #{topic}")
         PubSub.broadcast(KeenOptic.PubSub, topic, {@match_key, match})
 
         :ok

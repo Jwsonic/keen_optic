@@ -17,20 +17,22 @@ defmodule KeenOpticWeb.LiveView.Match do
       <img class="mini-map" src="/images/minimap.png" />
 
       <%= for player <- @match.radiant.players  do %>
-        <%= live_component @socket, PlayerComponent, player: player %>
+        <%= live_component(@socket, PlayerComponent, player: player) %>
       <% end %>
 
       <%= for player <- @match.dire.players do %>
-        <%= live_component @socket, PlayerComponent, player: player %>
+        <%= live_component(@socket, PlayerComponent, player: player) %>
       <% end %>
     </div>
     """
   end
 
   def mount(params, _session, socket) do
+    Logger.info("Hello there")
     match_id = extract_id!(params)
 
-    MatchWatcher.subscribe_match(match_id)
+    if connected?(socket),
+      do: MatchWatcher.subscribe_match(match_id) |> inspect() |> Logger.info(label: :sub)
 
     match =
       case MatchWatcher.get_match(match_id) do
@@ -44,6 +46,7 @@ defmodule KeenOpticWeb.LiveView.Match do
   # Genserver callbacks
 
   def handle_info({:match_update, match}, socket) do
+    Logger.info("New match data.")
     {:noreply, assign(socket, :match, match)}
   end
 
