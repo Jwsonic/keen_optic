@@ -31,7 +31,7 @@ defmodule KeenOpticWeb.LiveView.Match do
     match_id = extract_id!(params)
 
     if connected?(socket),
-      do: MatchWatcher.subscribe_match(match_id) |> inspect() |> Logger.info(label: :sub)
+      do: MatchWatcher.subscribe_match(match_id)
 
     match =
       case MatchWatcher.get_match(match_id) do
