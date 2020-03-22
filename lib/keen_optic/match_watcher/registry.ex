@@ -26,9 +26,6 @@ defmodule KeenOptic.MatchWatcher.Registry do
     {:via, Registry, {@name, match_id}}
   end
 
-  # Registry callbacks
-
-  @impl true
   def child_spec(_opts) do
     Registry.child_spec(keys: :unique, name: @name)
   end
