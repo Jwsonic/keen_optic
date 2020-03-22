@@ -33,15 +33,36 @@ defmodule KeenOptic.RealTimeStats.Player do
     field :name, :string
     field :x, :float
     field :y, :float
+    field :bottom, :float
+    field :left, :float
 
     embeds_one :hero, Hero
   end
 
+  @accountid_key "accountid"
+  @account_id_key "account_id"
+  @x_key "x"
+  @left_key "left"
+  @y_key "y"
+  @bottom_key "bottom"
+
   @impl true
   def coerce_params(params) do
-    case Map.get(params, "accountid") do
-      nil -> {:error, "Missing key 'accountid'."}
-      account_id -> {:ok, Map.put(params, "account_id", account_id)}
+    # We pre-compute some values needed by the view at decode time so LiveView processes won't duplicate work.
+    with {:ok, account_id} <- extract_param(params, @accountid_key),
+         {:ok, x} <- extract_param(params, @x_key),
+         {:ok, left} <- to_percent(x),
+         {:ok, y} <- extract_param(params, @y_key),
+         {:ok, bottom} <- to_percent(y) do
+      new_params =
+        params
+        |> Map.put(@account_id_key, account_id)
+        |> Map.put(@left_key, left)
+        |> Map.put(@bottom_key, bottom)
+
+      {:ok, new_params}
+    else
+      {:error, _messsage} = error -> error
     end
   end
 
@@ -50,5 +71,22 @@ defmodule KeenOptic.RealTimeStats.Player do
     hero = params |> Map.get("heroid") |> Hero.hero()
 
     put_embed(changeset, :hero, hero)
+  end
+
+  defp extract_param(params, param) do
+    case Map.get(params, param) do
+      nil -> {:error, "Missing key '#{param}'."}
+      result -> {:ok, result}
+    end
+  end
+
+  defp to_percent(num) when is_number(num) do
+    percent = num |> Kernel.+(0.5) |> Kernel.*(100.0) |> Float.round(2)
+
+    {:ok, percent}
+  end
+
+  defp to_percent(num) do
+    {:error, "Expected float, got #{inspect(num)} instead."}
   end
 end

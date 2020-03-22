@@ -4,7 +4,7 @@
 @import "../../deps/phoenix_live_view/assets/css/live_view.css";
 
 
-.circle {
+.hero {
   height: 25px;
   width: 25px;
   border-color: black;
@@ -12,12 +12,4 @@
   border-width: 5px;
   display: inline-block;
   position: absolute;
-}
-
-.radiant {
-  background-color: greenyellow;
-}
-
-.dire {
-  background-color: red;
 }

@@ -128,35 +128,30 @@ defmodule KeenOptic.DotaTest do
                     players: [
                       %KeenOptic.RealTimeStats.Player{
                         account_id: 99_394_623,
-                        hero_id: 0,
                         name: "get me out",
                         x: 0.0,
                         y: 0.0
                       },
                       %KeenOptic.RealTimeStats.Player{
                         account_id: 321_580_662,
-                        hero_id: 0,
                         name: "Тварь",
                         x: 0.0,
                         y: 0.0
                       },
                       %KeenOptic.RealTimeStats.Player{
                         account_id: 73_562_326,
-                        hero_id: 0,
                         name: "arturo b",
                         x: 0.0,
                         y: 0.0
                       },
                       %KeenOptic.RealTimeStats.Player{
                         account_id: 72_312_627,
-                        hero_id: 0,
                         name: "kimchi",
                         x: 0.0,
                         y: 0.0
                       },
                       %KeenOptic.RealTimeStats.Player{
                         account_id: 317_880_638,
-                        hero_id: 0,
                         name: "light your sword'",
                         x: 0.0,
                         y: 0.0
@@ -180,35 +175,30 @@ defmodule KeenOptic.DotaTest do
                     players: [
                       %KeenOptic.RealTimeStats.Player{
                         account_id: 96_189_126,
-                        hero_id: 0,
                         name: ".safelane idc",
                         x: 0.0,
                         y: 0.0
                       },
                       %KeenOptic.RealTimeStats.Player{
                         account_id: 25_907_144,
-                        hero_id: 0,
                         name: "土猫",
                         x: 0.0,
                         y: 0.0
                       },
                       %KeenOptic.RealTimeStats.Player{
                         account_id: 366_396_778,
-                        hero_id: 0,
                         name: "mode Zang64000x4",
                         x: 0.0,
                         y: 0.0
                       },
                       %KeenOptic.RealTimeStats.Player{
                         account_id: 54_580_962,
-                        hero_id: 0,
                         name: "Aang",
                         x: 0.0,
                         y: 0.0
                       },
                       %KeenOptic.RealTimeStats.Player{
                         account_id: 100_483_784,
-                        hero_id: 0,
                         name: "Max2",
                         x: 0.0,
                         y: 0.0
