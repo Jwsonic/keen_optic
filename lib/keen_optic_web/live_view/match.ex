@@ -28,7 +28,6 @@ defmodule KeenOpticWeb.LiveView.Match do
   end
 
   def mount(params, _session, socket) do
-    Logger.info("Hello there")
     match_id = extract_id!(params)
 
     if connected?(socket),

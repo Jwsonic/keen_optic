@@ -11,10 +11,10 @@ defmodule KeenOptic.MatchWatcher.Registry do
   Otherwise, it returns false.
   """
   @spec exists?(non_neg_integer()) :: boolean()
-  def exists?(match_id) do
+  def exists?(match_id) when is_integer(match_id) do
     case Registry.lookup(@name, match_id) do
       [] -> false
-      results -> true
+      _result -> true
     end
   end
 

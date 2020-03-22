@@ -74,8 +74,11 @@ defmodule KeenOptic.MatchWatcher.Worker do
 
         {:noreply, state}
 
-      {:error, _reason} ->
-        Logger.info("Stopping worker.")
+      {:error, error} ->
+        Logger.error("Received error: #{inspect(error)}")
+        {:noreply, state}
+
+      :stop ->
         {:stop, :normal, state}
     end
   end
@@ -98,33 +101,28 @@ defmodule KeenOptic.MatchWatcher.Worker do
   end
 
   defp subscribe(topic) do
-    Logger.info("Subbing on #{topic}")
     PubSub.subscribe(KeenOptic.PubSub, topic)
   end
 
   defp update_match(match_id) do
-    Logger.info("Updating")
+    Logger.info("Updating match data.")
 
     case Dota.real_time_stats(match_id) do
       {:ok, match} ->
         :ets.insert(@ets_table, {match_id, match})
 
         topic = build_topic(match_id)
-        Logger.info("broadcast on #{topic}")
         PubSub.broadcast(KeenOptic.PubSub, topic, {@match_key, match})
 
         :ok
 
       {:error, :no_match} ->
-        msg = "No match with id #{match_id}"
-        Logger.error(msg)
+        Logger.error("No match with id #{match_id}.")
 
-        {:error, msg}
+        :stop
 
-      {:error, error} ->
-        Logger.error("Error fetching match data #{inspect(error)}")
-
-        {:error, error}
+      {:error, _error} = error ->
+        error
     end
   end
 end
