@@ -1,4 +1,4 @@
-defmodule KeenOptic.RealTimeStats.Player do
+defmodule KeenOptic.Dota.RealTimeStats.Player do
   @moduledoc """
   Represents a player from real-time match data.
 

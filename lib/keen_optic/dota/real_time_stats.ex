@@ -5,7 +5,7 @@ defmodule KeenOptic.Dota.RealTimeStats do
   use KeenOptic.ExternalData
 
   alias KeenOptic.Dota.Match
-  alias KeenOptic.RealTimeStats.Team
+  alias KeenOptic.Dota.RealTimeStats.Team
 
   @radiant_id 2
   @dire_id 3

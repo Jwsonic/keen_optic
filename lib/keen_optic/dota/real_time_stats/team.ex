@@ -1,4 +1,4 @@
-defmodule KeenOptic.RealTimeStats.Team do
+defmodule KeenOptic.Dota.RealTimeStats.Team do
   @moduledoc """
   Represents a team from a real time match.
 
@@ -32,7 +32,7 @@ defmodule KeenOptic.RealTimeStats.Team do
   """
   use KeenOptic.ExternalData
 
-  alias KeenOptic.RealTimeStats.Player
+  alias KeenOptic.Dota.RealTimeStats.Player
 
   @primary_key false
   embedded_schema do

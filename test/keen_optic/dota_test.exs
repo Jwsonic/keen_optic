@@ -123,34 +123,34 @@ defmodule KeenOptic.DotaTest do
       use_cassette "real_time_stats" do
         assert {:ok,
                 %KeenOptic.Dota.RealTimeStats{
-                  dire: %KeenOptic.RealTimeStats.Team{
+                  dire: %KeenOptic.Dota.RealTimeStats.Team{
                     net_worth: 0,
                     players: [
-                      %KeenOptic.RealTimeStats.Player{
+                      %KeenOptic.Dota.RealTimeStats.Player{
                         account_id: 99_394_623,
                         name: "get me out",
                         x: 0.0,
                         y: 0.0
                       },
-                      %KeenOptic.RealTimeStats.Player{
+                      %KeenOptic.Dota.RealTimeStats.Player{
                         account_id: 321_580_662,
                         name: "Тварь",
                         x: 0.0,
                         y: 0.0
                       },
-                      %KeenOptic.RealTimeStats.Player{
+                      %KeenOptic.Dota.RealTimeStats.Player{
                         account_id: 73_562_326,
                         name: "arturo b",
                         x: 0.0,
                         y: 0.0
                       },
-                      %KeenOptic.RealTimeStats.Player{
+                      %KeenOptic.Dota.RealTimeStats.Player{
                         account_id: 72_312_627,
                         name: "kimchi",
                         x: 0.0,
                         y: 0.0
                       },
-                      %KeenOptic.RealTimeStats.Player{
+                      %KeenOptic.Dota.RealTimeStats.Player{
                         account_id: 317_880_638,
                         name: "light your sword'",
                         x: 0.0,
@@ -170,34 +170,34 @@ defmodule KeenOptic.DotaTest do
                     server_steam_id: 90_133_486_099_891_208
                   },
                   match_id: nil,
-                  radiant: %KeenOptic.RealTimeStats.Team{
+                  radiant: %KeenOptic.Dota.RealTimeStats.Team{
                     net_worth: 0,
                     players: [
-                      %KeenOptic.RealTimeStats.Player{
+                      %KeenOptic.Dota.RealTimeStats.Player{
                         account_id: 96_189_126,
                         name: ".safelane idc",
                         x: 0.0,
                         y: 0.0
                       },
-                      %KeenOptic.RealTimeStats.Player{
+                      %KeenOptic.Dota.RealTimeStats.Player{
                         account_id: 25_907_144,
                         name: "土猫",
                         x: 0.0,
                         y: 0.0
                       },
-                      %KeenOptic.RealTimeStats.Player{
+                      %KeenOptic.Dota.RealTimeStats.Player{
                         account_id: 366_396_778,
                         name: "mode Zang64000x4",
                         x: 0.0,
                         y: 0.0
                       },
-                      %KeenOptic.RealTimeStats.Player{
+                      %KeenOptic.Dota.RealTimeStats.Player{
                         account_id: 54_580_962,
                         name: "Aang",
                         x: 0.0,
                         y: 0.0
                       },
-                      %KeenOptic.RealTimeStats.Player{
+                      %KeenOptic.Dota.RealTimeStats.Player{
                         account_id: 100_483_784,
                         name: "Max2",
                         x: 0.0,
