@@ -1,7 +1,7 @@
 defmodule KeenOptic.OpenDota.ProPlayer do
   use KeenOptic.ExternalData
 
-  @account_id {:account_id, :id, autogenerate: false}
+  @primary_key {:account_id, :id, autogenerate: false}
   embedded_schema do
     field :name, :string
     field :team_tag, :string

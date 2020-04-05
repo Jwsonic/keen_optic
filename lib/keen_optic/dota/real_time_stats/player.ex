@@ -35,6 +35,7 @@ defmodule KeenOptic.Dota.RealTimeStats.Player do
     field :y, :float
     field :bottom, :float
     field :left, :float
+    field :pro_name, :string
 
     embeds_one :hero, Hero
   end
@@ -45,6 +46,15 @@ defmodule KeenOptic.Dota.RealTimeStats.Player do
   @left_key "left"
   @y_key "y"
   @bottom_key "bottom"
+
+  @spec name(Player.t()) :: String.t()
+  def name(%Player{name: name, pro_name: nil}) do
+    name
+  end
+
+  def name(%Player{pro_name: pro_name}) do
+    pro_name
+  end
 
   @impl true
   def coerce_params(params) do
