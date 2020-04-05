@@ -20,10 +20,12 @@ defmodule KeenOptic.ExternalData do
 
       import Ecto.Changeset
 
+      alias __MODULE__
+
       @behaviour KeenOptic.ExternalData
 
       @before_compile KeenOptic.ExternalData
-      @after_compile KeenOptic.ExternalData
+      # @after_compile KeenOptic.ExternalData
 
       # Default implementations for our behaviours.
       def coerce_params(params), do: {:ok, params}
@@ -35,6 +37,9 @@ defmodule KeenOptic.ExternalData do
 
   defmacro __before_compile__(env) do
     quote location: :keep do
+      @type t() :: %unquote(env.module){}
+
+      @spec new(map() | list(map())) :: {:ok, t()} | {:error, String.t()}
       def new(list) when is_list(list) do
         results =
           list
@@ -85,13 +90,6 @@ defmodule KeenOptic.ExternalData do
         end)
         |> String.trim_trailing()
       end
-    end
-  end
-
-  defmacro __after_compile__(env, _bytecode) do
-    quote do
-      @type t() :: %unquote(env.module){}
-      @spec new(map() | list(map())) :: {:ok, t()} | {:error, String.t()}
     end
   end
 end
